@@ -3,22 +3,26 @@ import { Comment } from "./Comment.model";
 import { Link } from "./Link.model";
 import { Site } from "./Site.model";
 import { User } from "./User.model";
+import { Token } from "./Token.model"
 
 Category.model.belongsToMany(Link.model, { through: 'LinkCategory' });
-Link.model.belongsToMany(Category.model, { through: 'LinkCategory' });
-Link.model.belongsTo(User.model);
 Comment.model.belongsTo(Link.model);
 Comment.model.belongsTo(User.model);
+Link.model.belongsToMany(Category.model, { through: 'LinkCategory' });
+Link.model.belongsTo(User.model);
+Link.model.belongsTo(Site.model);
+Site.model.hasMany(Link.model);
+Token.model.belongsTo(User.model);
 User.model.hasMany(Link.model);
 User.model.hasMany(Comment.model);
-Site.model.hasMany(Link.model);
-Link.model.belongsTo(Site.model);
+User.model.hasOne(Token.model);
 
 export {
     Category,
     Comment,
     Link,
     Site,
-    User
+    User,
+    Token
 }
 
