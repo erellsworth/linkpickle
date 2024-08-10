@@ -10,13 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/luxon": "^3.4.2",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "luxon": "^3.5.0",
+    "passport": "^0.7.0",
+    "passport-http-bearer": "^1.0.1",
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.1.0",
+    "@types/passport": "^1.0.16",
+    "@types/passport-http-bearer": "^1.0.41",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
   }

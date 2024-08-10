@@ -6,9 +6,10 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "api.js",
+        "outDir": "dist",
         "sourceMap": true,
         "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "**/*.ts"

@@ -6,6 +6,7 @@ export interface LpToken extends LpBase {
     token: string;
     User: LpUser;
     expiresAt: string;
+    UserId?: number;
 }
 
 export interface LpTokenCreationAttributes extends Optional<LpToken, "id"> { }

@@ -4,8 +4,7 @@ import { LpLink } from "./link";
 import { Model, Optional } from "sequelize";
 
 export interface LpUser extends LpBase {
-    username: string;
-    password: string;
+    email: string;
     Link: LpLink[];
     Comments: LpComment[];
 }
