@@ -10,13 +10,6 @@ const attributes: ModelAttributes<LpTokenInstance> = {
         type: DataTypes.STRING,
         allowNull: false
     },
-    createdAt: {
-        type: DataTypes.DATE,
-        get() {
-            const rawValue = this.getDataValue('createdAt');
-            return new Date(rawValue as string).toDateString();
-        }
-    },
     expiresAt: {
         type: DataTypes.DATE,
         get() {
@@ -26,39 +19,34 @@ const attributes: ModelAttributes<LpTokenInstance> = {
     }
 };
 
-const TokenModel = db.define<LpTokenInstance>('Token', attributes);
+const TokenModel = db.define<LpTokenInstance>('Token', attributes, { timestamps: false });
 
 const getNewExpiration = () => DateTime.now().plus({ months: 1 }).toSQL({ includeOffset: false });
 const getToken = () => randomBytes(48).toString('hex');
 
 const Token = {
     model: TokenModel,
-    generate: async (UserId: number): Promise<GenericResult> => {
+    generate: async (UserId: number): Promise<LpToken | string> => {
         try {
 
             const expiresAt = getNewExpiration();
             const token = getToken();
 
-            await TokenModel.create({
+            const userToken = await TokenModel.create({
                 UserId,
                 token,
                 expiresAt
             } as LpToken);
 
-            return {
-                success: true
-            }
+            return userToken;
 
         } catch (e) {
-            return {
-                success: true,
-                error: e as Error
-            }
+            return (e as Error).message;
         }
     },
-    refresh: async (UserId: number): Promise<GenericResult> => {
+    refresh: async (UserId: number): Promise<LpToken | string> => {
         try {
-            let userToken = await TokenModel.findOne({
+            const userToken = await TokenModel.findOne({
                 where: { UserId }
             });
 
@@ -66,18 +54,13 @@ const Token = {
                 userToken.expiresAt = getNewExpiration();
                 userToken.token = getToken();
                 await userToken.save();
-                return {
-                    success: true
-                }
+                return userToken;
             } else {
                 return Token.generate(UserId);
             }
 
         } catch (e) {
-            return {
-                success: false,
-                error: e as Error
-            }
+            return (e as Error).message;
         }
     }
 };

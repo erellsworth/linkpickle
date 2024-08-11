@@ -3,7 +3,6 @@ import { db } from "../utils/db";
 import { LpHashBrown, LpHashBrownInstance } from "../interfaces/hash";
 import * as bcrypt from 'bcrypt';
 import { GenericResult } from "../interfaces/api";
-import { User } from "./User.model";
 
 const attributes: ModelAttributes<LpHashBrownInstance> = {
     hash: {
@@ -26,7 +25,7 @@ const HashBrown = {
     model: HashBrownModel,
     generate: async (UserId: number, email: string, password: string): Promise<GenericResult> => {
         try {
-            const hash = await HashBrown.hash(email, password);
+            const hash = await bcrypt.hash(password + email, 10);
             await HashBrownModel.create({
                 hash,
                 UserId
@@ -42,8 +41,8 @@ const HashBrown = {
             }
         }
     },
-    hash: async (email: string, password: string): Promise<string> => {
-        return bcrypt.hash(password + email, 10);
+    verifiy: async (email: string, password: string, hash: string): Promise<boolean> => {
+        return bcrypt.compare(password + email, hash);
     }
 };
 

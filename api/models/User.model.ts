@@ -1,9 +1,8 @@
-import { DataTypes, ModelAttributes } from "sequelize";
+import { DataTypes, ModelAttributes, Op } from "sequelize";
 import { db } from "../utils/db";
 import { LpUser, LpUserInstance } from "../interfaces/user";
-import { ApiResponse, GenericResult } from "../interfaces/api";
+import { GenericResult } from "../interfaces/api";
 import { HashBrown } from "./HashBrown.model";
-import { authenticate } from "passport";
 import { Token } from "./Token.model";
 
 const attributes: ModelAttributes<LpUserInstance> = {
@@ -40,13 +39,17 @@ const User = {
         return UserModel.findOne({
             where: {
                 email
-            }
+            },
+            include: HashBrown.model
         });
     },
     findByToken: async (token: string): Promise<LpUser | false> => {
         const userToken = await Token.model.findOne({
             where: {
-                token
+                token,
+                expiresAt: {
+                    [Op.gt]: new Date()
+                }
             },
             include: UserModel
         });
@@ -55,29 +58,29 @@ const User = {
 
         return false;
     },
-    authenticate: async (email: string, passport: string): Promise<LpUser | string> => {
-        const hash = await HashBrown.hash(email, passport);
-        const hashBrown = await HashBrown.model.findOne({
-            where: {
-                hash
-            },
-            include: UserModel
-        });
-
-        if (hashBrown) {
-            const refresh = await Token.refresh(hashBrown.User.id);
-            if (refresh.success) {
-                return hashBrown.User;
-            } else {
-                return `Login failed: ${refresh.error?.message}`;
-            }
-        }
+    authenticate: async (email: string, password: string): Promise<LpUser | string> => {
 
         const user = await User.findByEmail(email);
 
-        if (user) { return 'Invalid Password'; }
+        if (!user || !user.HashBrown) {
+            return `Invalid credentials`;
+        }
 
-        return `User ${email} Not Found`;
+        const validCredentials = await HashBrown.verifiy(email, password, user.HashBrown.hash);
+
+        if (validCredentials) {
+            const refresh = await Token.refresh(user.id);
+            if (typeof refresh === 'string') {
+                return `Login failed: ${refresh}`;
+            } else {
+                const userResult = { ...user.toJSON() };
+                userResult.Token = refresh;
+                delete userResult.HashBrown;
+                return userResult;
+            }
+        } else {
+            return `Invalid credentials`;
+        }
 
     },
     register: async (email: string, password: string): Promise<GenericResult> => {

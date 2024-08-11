@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import sitesRouter from "./router";
 import { errorResponse, successResponse } from "../utils/responses";
 import { Link, Site, User } from "../models";
+import isAuthenticated from "./auth.midleware";
 
-sitesRouter.get('/sites/:page?', async (req: Request<{ page: number }>, res: Response) => {
+sitesRouter.get('/sites/:page?', isAuthenticated, async (req: Request<{ page: number }>, res: Response) => {
 
     let { page } = req.params;
 

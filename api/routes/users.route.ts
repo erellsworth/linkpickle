@@ -25,13 +25,14 @@ usersRouter.post('/user/login', async (req: Request<{}, { email: string, passwor
     try {
         const { email, password } = req.body;
 
-        const result = await User.register(email, password);
+        const user = await User.authenticate(email, password);
 
-        if (result.success) {
-            return successResponse(res, {});
+        if (typeof user === 'string') {
+            return errorResponse(res, user);
         }
 
-        return errorResponse(res, result.error?.message as string);
+        return successResponse(res, { user });
+
     } catch (e) {
         errorResponse(res, (e as Error).message);
     }
