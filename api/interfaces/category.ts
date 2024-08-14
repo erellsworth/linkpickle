@@ -5,9 +5,9 @@ import { LpLink } from "./link";
 export interface LpCategory extends LpBase {
     name: string;
     description?: string;
-    parent?: LpCategory;
-    children?: LpCategory[];
-    Link: LpLink[];
+    Parent?: LpCategory;
+    Children?: LpCategory[];
+    Links?: LpLink[];
 }
 
 export interface LpCategoryCreationAttributes extends Optional<LpCategory, "id"> { }

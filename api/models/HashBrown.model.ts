@@ -15,8 +15,7 @@ const attributes: ModelAttributes<LpHashBrownInstance> = {
             const rawValue = this.getDataValue('updatedAt');
             return new Date(rawValue as string).toDateString();
         }
-    },
-
+    }
 };
 
 const HashBrownModel = db.define<LpHashBrownInstance>('HashBrown', attributes, { timestamps: false });

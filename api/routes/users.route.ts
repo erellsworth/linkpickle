@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
 import usersRouter from "./router";
 import { errorResponse, successResponse } from "../utils/responses";
-import { User } from "../models";
+import { Setting, User } from "../models";
 
 usersRouter.post('/user/register', async (req: Request<{}, { email: string, password: string }>, res: Response) => {
 
     try {
+        const allowRegistration = await Setting.findByName('allowRegistration');
+
+        if (!Boolean(allowRegistration)) {
+            return errorResponse(res, 'Registration currently disabled');
+        }
+
         const { email, password } = req.body;
 
         const result = await User.register(email, password);

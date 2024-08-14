@@ -35,8 +35,30 @@ const attributes: ModelAttributes<LpSettingInstance> = {
 
 const SettingModel = db.define<LpSettingInstance>('Setting', attributes);
 
+/**
+ * TODO: This should be more robust. It:
+ *  - will require some kind of user permission scheme
+ *  - should be managable by an admin user in the UI
+ *  - should handle different variable types
+ *  - could just be a single JSON object?
+ */
+
 const Setting = {
-    model: SettingModel
+    model: SettingModel,
+    findAll: async (): Promise<{ [key: string]: string }> => {
+        const settings = await SettingModel.findAll();
+        const settingObj: { [key: string]: string } = {};
+        return settings.reduce((a, b) => { a[b.name] = b.value; return a; }, settingObj);
+    },
+    findByName: async (name: string, defaultValue: string = ''): Promise<string> => {
+        const setting = await SettingModel.findOne({
+            where: {
+                name
+            }
+        });
+
+        return setting?.value || defaultValue;
+    }
 };
 
 export {

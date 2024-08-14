@@ -1,6 +1,6 @@
 import { DataTypes, ModelAttributes } from "sequelize";
 import { db } from "../utils/db";
-import { LpCategory, LpCategoryInstance } from "../interfaces/category";
+import { LpCategoryInstance } from "../interfaces/category";
 
 const attributes: ModelAttributes<LpCategoryInstance> = {
     name: {
@@ -10,12 +10,6 @@ const attributes: ModelAttributes<LpCategoryInstance> = {
     description: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-    parent: {
-        type: DataTypes.VIRTUAL
-    },
-    children: {
-        type: DataTypes.VIRTUAL
     },
     id: {
         primaryKey: true,
@@ -41,10 +35,7 @@ const attributes: ModelAttributes<LpCategoryInstance> = {
 const CategoryModel = db.define<LpCategoryInstance>('Category', attributes);
 
 const Category = {
-    model: CategoryModel,
-    findAll: async (id: number): Promise<{ rows: LpCategory[]; count: number }> => {
-        return CategoryModel.findAndCountAll();
-    }
+    model: CategoryModel
 };
 
 export {

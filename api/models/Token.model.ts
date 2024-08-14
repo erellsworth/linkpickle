@@ -3,7 +3,6 @@ import { DateTime } from "luxon";
 import { db } from "../utils/db";
 import { LpToken, LpTokenInstance } from "../interfaces/token";
 import { randomBytes } from "crypto";
-import { GenericResult } from "../interfaces/api";
 
 const attributes: ModelAttributes<LpTokenInstance> = {
     token: {

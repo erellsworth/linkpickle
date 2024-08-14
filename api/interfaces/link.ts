@@ -11,6 +11,7 @@ export interface LpLink extends LpBase {
     Categories: LpCategory[];
     Site: LpSite;
     thumbnail?: string;
+    
 }
 
 export interface LpLinkCreationAttributes extends Optional<LpLink, "id"> { }

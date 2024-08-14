@@ -26,6 +26,6 @@ export const errorResponse = (res: Response, message: string, code: number = 500
     res.json(response);
 }
 
-export const notFoundResponse = (res: Response): void => {
-    errorResponse(res, 'Page not found', 404);
+export const notFoundResponse = (res: Response, contentType: string = 'Page'): void => {
+    errorResponse(res, `${contentType} not found`, 404);
 }
