@@ -7,6 +7,21 @@ import isAuthenticated from "./auth.midleware";
 import { LpUser } from "../interfaces/user";
 import { LpLink } from "../interfaces/link";
 
+linksRouter.get('/links/category/:id', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
+
+    const page = req.params.page || 1;
+    const limit = req.query.limit || 9;
+    const user = req.user as LpUser;
+
+    try {
+        const links = await Link.findByCategoryId(user.id, req.params.id, page, limit);
+        successResponse(res, links);
+    } catch (e) {
+        errorResponse(res, (e as Error).message);
+    }
+
+});
+
 linksRouter.get('/links/:page?', isAuthenticated, async (req: Request<{ page: number; }, {}, {}, { limit?: number }>, res: Response) => {
 
     const page = req.params.page || 1;

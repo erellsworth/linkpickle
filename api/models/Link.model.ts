@@ -85,18 +85,21 @@ const Link = {
 
         return LinkModel.findAndCountAll(options)
     },
-    findByCategoryId: async (id: number): Promise<{ rows: LpLink[]; count: number }> => {
+    findByCategoryId: async (UserId: number, id: number, page: number, limit: number): Promise<{ rows: LpLink[]; count: number }> => {
         const options: FindAndCountOptions = {
             where: {
-                '$Category.id$': id
+                '$Category.id$': id,
+                UserId
             },
             order: [['createdAt', 'DESC']],
             distinct: true,
+            limit,
+            offset: (page - 1) * limit,
             include: [Comment.model, Site.model]
 
         };
 
-        return LinkModel.findAndCountAll(options)
+        return LinkModel.findAndCountAll(options);
     },
     findAll: async (): Promise<{ rows: LpLink[]; count: number }> => {
         return LinkModel.findAndCountAll({
