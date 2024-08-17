@@ -15,6 +15,10 @@ const attributes: ModelAttributes<LpLinkInstance> = {
         type: DataTypes.STRING,
         allowNull: false
     },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     thumbnail: {
         type: DataTypes.STRING,
         allowNull: true
@@ -44,6 +48,11 @@ const LinkModel = db.define<LpLinkInstance>('Link', attributes);
 
 const Link = {
     model: LinkModel,
+    create: async (link: LpLink) => {
+        if (!link.SiteId) {
+
+        }
+    },
     findByUserId: async (UserId: number, page: number, limit: number): Promise<PaginatedResults<LpLink>> => {
         const options: FindAndCountOptions = {
             where: {

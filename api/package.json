@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch index.ts",
+    "dev": "tsx watch --max-http-header-size 24000 index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -18,7 +18,8 @@
     "passport": "^0.7.0",
     "passport-http-bearer": "^1.0.1",
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "url-metadata": "^4.1.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

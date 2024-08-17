@@ -7,11 +7,14 @@ import { LpUser } from "./user";
 export interface LpLink extends LpBase {
     url: string;
     title: string;
+    description?: string;
     User: LpUser;
+    UserId?: number;
     Categories: LpCategory[];
     Site: LpSite;
+    SiteId?: number;
     thumbnail?: string;
-    
+
 }
 
 export interface LpLinkCreationAttributes extends Optional<LpLink, "id"> { }

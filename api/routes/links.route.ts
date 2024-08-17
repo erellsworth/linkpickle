@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import urlMetadata from 'url-metadata';
 import linksRouter from "./router";
 import { errorResponse, successResponse } from "../utils/responses";
 import { Category, Comment, Link, Site, User } from "../models";
@@ -36,7 +37,15 @@ linksRouter.get('/link/:id', isAuthenticated, async (req: Request<{ id: number; 
 
 linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLink }>, res: Response) => {
 
+    if (!req.body.link || !req.body.link.url) {
+        return errorResponse(res, "Missing required link data", 400);
+    }
+
     try {
+
+        const url = new URL(req.body.link.url);
+        const metadata = await urlMetadata(url.toString());
+
         const user = req.user as LpUser;
 
         const link = {
@@ -44,6 +53,19 @@ linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLi
                 UserId: user.id
             }
         };
+
+        const site = await Site.getFromDomain(url.hostname.replace(/^[^.]+\./g, ''), metadata);
+
+        link.SiteId = site.id;
+
+        link.description = link.description || metadata.description || metadata['og:description'];
+        link.title = link.title || metadata.title || metadata['og:title'];
+
+        const img = metadata.image || metadata['og:image'];
+
+        if (img) {
+            link.thumbnail = img;
+        }
 
         const newLink = await Link.model.create(link);
 

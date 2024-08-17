@@ -5,7 +5,7 @@ import { LpLink } from "./link";
 export interface LpSite extends LpBase {
     domain: string;
     name: string;
-    Links: LpLink[];
+    Links?: LpLink[];
     thumbnail?: string;
 }
 
