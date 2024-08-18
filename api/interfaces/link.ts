@@ -14,7 +14,7 @@ export interface LpLink extends LpBase {
     Site: LpSite;
     SiteId?: number;
     thumbnail?: string;
-
+    pinned: boolean;
 }
 
 export interface LpLinkCreationAttributes extends Optional<LpLink, "id"> { }

@@ -14,13 +14,14 @@ export const successResponse = <T>(res: Response, data: T): void => {
     }
 }
 
-export const errorResponse = (res: Response, message: string, code: number = 500): void => {
-    const response: ApiResponse = {
+export const errorResponse = <T>(res: Response, message: string, code: number = 500, data?: T): void => {
+    const response: ApiResponse<T> = {
         success: false,
         error: {
             message,
             code
-        }
+        },
+        data
     };
 
     res.json(response);

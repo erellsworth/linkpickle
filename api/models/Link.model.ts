@@ -15,6 +15,11 @@ const attributes: ModelAttributes<LpLinkInstance> = {
         type: DataTypes.STRING,
         allowNull: false
     },
+    pinned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0
+    },
     description: {
         type: DataTypes.STRING,
         allowNull: true
@@ -52,6 +57,13 @@ const Link = {
         if (!link.SiteId) {
 
         }
+    },
+    findByUrl: async (url: string) => {
+        return LinkModel.findOne({
+            where: {
+                url
+            }
+        });
     },
     findByUserId: async (UserId: number, page: number, limit: number): Promise<PaginatedResults<LpLink>> => {
         const options: FindAndCountOptions = {
