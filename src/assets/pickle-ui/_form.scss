@@ -1,0 +1,13 @@
+form {
+    background: var(--primary-dark);
+    padding: .25rem .25rem 1rem;
+    margin: .25rem auto;
+    border-radius: .25rem;
+
+    label {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: .5rem 1rem;
+    }
+}

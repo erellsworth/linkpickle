@@ -1,7 +1,12 @@
-<div class="bg-primary-reverse m-1 h-full border-round-lg">
-    <form>
-        <pickle-text-input type="password" />
-        <pickle-text-input />
-        <pickle-button />
+<div class="bg-primary-reverse m-1 p-2 h-full border-round-lg">
+    @if(formGroup) {
+    <form [formGroup]="formGroup" class="text-center w-6">
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email" placeholder="email@example.com" />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" placeholder="password" />
+        <button type="button" class="w-9" (click)="login()">Login</button>
     </form>
+    }
 </div>
