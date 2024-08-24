@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 import { PageComponent } from '../../pickle-ui/page/page.component';
+import { Router } from '@angular/router';
 
 export interface LoginForm {
   email: FormControl<string>;
@@ -20,7 +21,11 @@ export class LoginComponent implements OnInit {
 
   public formGroup!: FormGroup<LoginForm>;
 
-  constructor(private fb: FormBuilder, private toaster: ToasterService, private userService: UserService) { }
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private toaster: ToasterService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
@@ -41,6 +46,7 @@ export class LoginComponent implements OnInit {
         message: 'Login Successful',
         severity: 'success'
       });
+      this.router.navigate(['/']);
     } else {
       this.toaster.add({
         title: 'You Shall Not Pass!',

@@ -3,7 +3,24 @@ import usersRouter from "./router";
 import { errorResponse, successResponse } from "../utils/responses";
 import { Setting, User } from "../models";
 
-usersRouter.post('/user/register', async (req: Request<{}, { email: string, password: string }>, res: Response) => {
+//TODO: add email verification step
+usersRouter.post('/user/register', async (req: Request<{}, { email: string, password: string, confirmPassword: string }>, res: Response) => {
+
+    const { email, password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+        return errorResponse(res, 'Passwords to not match');
+    }
+
+    if (password.length < 8) {
+        return errorResponse(res, 'Password must be at least 8 characters');
+    }
+
+    if (password.length > 16) {
+        return errorResponse(res, 'Password must be 16 characters or less');
+    }
+
+    //TODO add password strength test
 
     try {
         const allowRegistration = await Setting.findByName('allowRegistration');
@@ -11,8 +28,6 @@ usersRouter.post('/user/register', async (req: Request<{}, { email: string, pass
         if (!Boolean(allowRegistration)) {
             return errorResponse(res, 'Registration currently disabled');
         }
-
-        const { email, password } = req.body;
 
         const result = await User.register(email, password);
 
@@ -37,7 +52,7 @@ usersRouter.post('/user/login', async (req: Request<{}, { email: string, passwor
             return errorResponse(res, user);
         }
 
-        return successResponse(res, { user });
+        return successResponse(res, user);
 
     } catch (e) {
         errorResponse(res, (e as Error).message);

@@ -12,7 +12,6 @@ export class UserService {
 
   constructor(private http: HttpClient, private localStore: LocalStoreService) {
     const localUser = localStore.getValue<LpUser>('PickleUser');
-
     if (localUser) {
       this.user.set(localUser);
     }
@@ -36,5 +35,22 @@ export class UserService {
         error: e as Error
       }
     }
+  }
+
+  public async register(credentials: { email: string, password: string, confirmPassword: string }) {
+    try {
+      const result = await firstValueFrom(this.http.post<ApiResponse>('api/user/register', credentials));
+
+      return result;
+    } catch (e) {
+      return {
+        success: false,
+        error: e as Error
+      }
+    }
+  }
+
+  public async recover(email: string) {
+    //TODO
   }
 }
