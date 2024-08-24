@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { PickleToast } from '../../interfaces/toaster.interface';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircle, faClose, faSkull, faWarning } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faClose, faSkull, faWarning, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class ToastListComponent {
 
   constructor(private toaster: ToasterService) { }
 
-  public icons = {
+  public icons: { [key: string]: IconDefinition } = {
     close: faClose,
     success: faCircle,
     error: faSkull,
@@ -29,4 +29,8 @@ export class ToastListComponent {
     }
   }
 
+  public getIcon(severity: PickleToast['severity']): IconDefinition {
+    const key = severity as string;
+    return this.icons[key];
+  }
 }
