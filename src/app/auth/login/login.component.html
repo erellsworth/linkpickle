@@ -1,4 +1,4 @@
-<div class="bg-primary-reverse m-1 p-2 h-full border-round-lg">
+<app-page>
     @if(formGroup) {
     <form [formGroup]="formGroup" class="text-center w-6">
         <label for="email">Email:</label>
@@ -9,4 +9,7 @@
         <button type="button" class="w-9" (click)="login()" [disabled]="formGroup.invalid">Login</button>
     </form>
     }
-</div>
+    <div class="text-center">
+        <a class="p-2" href="/register">Register</a> <a class="p-2" href="/recover">Forgot Password</a>
+    </div>
+</app-page>

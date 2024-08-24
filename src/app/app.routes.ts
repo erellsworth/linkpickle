@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { LinksComponent } from './dashboard/links/links.component';
 import { userGuard } from './user.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { RecoverComponent } from './auth/recover/recover.component';
 
 export const routes: Routes = [
     {
@@ -13,5 +14,13 @@ export const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
+    },
+    {
+        path: 'recover',
+        component: RecoverComponent
+    },
+    {
+        path: 'register',
+        component: RegisterComponent
     }
 ];

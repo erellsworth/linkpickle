@@ -36,6 +36,5 @@ export class UserService {
         error: e as Error
       }
     }
-
   }
 }

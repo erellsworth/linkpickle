@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService } from '../services/user.service';
-import { ToasterService } from '../services/toaster.service';
+import { UserService } from '../../services/user.service';
+import { ToasterService } from '../../services/toaster.service';
+import { PageComponent } from '../../pickle-ui/page/page.component';
 
 export interface LoginForm {
   email: FormControl<string>;
@@ -11,7 +12,7 @@ export interface LoginForm {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [PageComponent, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit {
     this.formGroup = this.fb.group({
       email: this.fb.nonNullable.control('', Validators.required),
       password: this.fb.nonNullable.control('', Validators.required)
-    })
+    });
   }
 
   async login(): Promise<void> {
@@ -33,8 +34,6 @@ export class LoginComponent implements OnInit {
     const credentials = { email, password } as { email: string, password: string };
 
     const result = await this.userService.login(credentials);
-
-    console.log('result', result);
 
     if (result.success) {
       this.toaster.add({
@@ -50,4 +49,5 @@ export class LoginComponent implements OnInit {
       });
     }
   }
+
 }
