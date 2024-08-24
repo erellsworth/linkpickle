@@ -12,4 +12,10 @@ button {
         background: var(--primary-hover);
         color: #000000;
     }
+
+    &:disabled {
+        background: var(--secondary-dark);
+        color: var(--primary-color-text);
+        cursor: auto;
+    }
 }

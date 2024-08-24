@@ -21,13 +21,21 @@ export class UserService {
   public user: WritableSignal<LpUser> = signal({} as LpUser);
 
   public async login(credentials: { email: string, password: string }): Promise<GenericResult> {
-    const result = await firstValueFrom(this.http.post<ApiResponse<LpUser>>('api/user/login', credentials));
+    try {
+      const result = await firstValueFrom(this.http.post<ApiResponse<LpUser>>('api/user/login', credentials));
 
-    if (result.success) {
-      this.user.set(result.data as LpUser);
-      this.localStore.setValue('PickleUser', result.data);
+      if (result.success) {
+        this.user.set(result.data as LpUser);
+        this.localStore.setValue('PickleUser', result.data);
+      }
+
+      return result;
+    } catch (e) {
+      return {
+        success: false,
+        error: e as Error
+      }
     }
 
-    return result;
   }
 }

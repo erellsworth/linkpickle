@@ -1,0 +1,34 @@
+.toast {
+    font-size: 1rem;
+    border-radius: .25rem;
+    margin: 1rem;
+    position: relative;
+
+    h3 {
+        font-size: 1.5rem;
+        margin: 0;
+        padding: 1rem 0 .75rem .75rem;
+        border-bottom: 1px solid #000000;
+    }
+
+    p {
+        padding: .5rem .75rem;
+    }
+
+    &.info {
+        background: var(--severity-info);
+    }
+
+    &.success {
+        background: var(--severity-success);
+    }
+
+    &.error {
+        background: var(--severity-error);
+        color: var(--secondary-light);
+    }
+
+    &.warning {
+        background: var(--severity-warning);
+    }
+}

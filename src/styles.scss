@@ -7,6 +7,11 @@
     --secondary-color: #dee75b;
     --secondary-dark: hsl(from var(--secondary-color) h s 20);
     --secondary-light: hsl(from var(--secondary-color) h s 80);
+
+    --severity-success: var(--primary-color);
+    --severity-info: var(--primary-light);
+    --severity-error: #ad3802;
+    --severity-warning: var(--secondary-color);
 }
 
 @import './assets/pickle-ui/pickle-ui.scss';

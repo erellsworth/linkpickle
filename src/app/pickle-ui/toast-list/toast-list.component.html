@@ -1,0 +1,11 @@
+@for (slice of toasts; track $index) {
+<div class="toast {{slice.severity}}">
+    <span class="absolute top-0 right-0 cursor-pointer p-1" (click)="dismiss(slice.id)">
+        <fa-icon [icon]="icons.close"></fa-icon>
+    </span>
+    @if (slice.title) {
+    <h3>{{slice.title}}</h3>
+    }
+    <p>{{slice.message}}</p>
+</div>
+}
