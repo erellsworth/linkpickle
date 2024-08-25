@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LinkService } from '../../../services/link.service';
+import { SqueezeboxComponent } from '../../../pickle-ui/squeezebox/squeezebox.component';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -13,11 +14,13 @@ interface LinkForm {
 @Component({
   selector: 'app-link-pickler',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SqueezeboxComponent],
   templateUrl: './link-pickler.component.html',
   styleUrl: './link-pickler.component.scss'
 })
 export class LinkPicklerComponent {
+
+  @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
 
   public formGroup: FormGroup<LinkForm> = this.fb.group({
     url: this.fb.nonNullable.control('', Validators.required),
