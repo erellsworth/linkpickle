@@ -1,1 +1,6 @@
-<p>links works!</p>
+@if (!loading && !links.length) {
+<p>No Links found</p>
+}
+@if (loading) {
+<app-loading-indicator />
+}

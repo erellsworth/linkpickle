@@ -6,9 +6,7 @@ export const userGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const userService = inject(UserService);
 
-  const token = userService.user().Token;
-
-  if (!token || !token.token) {
+  if (!userService.isLoggedIn) {
     router.navigate(['login']);
     return false;
   }

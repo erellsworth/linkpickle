@@ -19,6 +19,15 @@ export class UserService {
 
   public user: WritableSignal<LpUser> = signal({} as LpUser);
 
+  public get isLoggedIn(): boolean {
+    return Boolean(this.token);
+  }
+
+  public get token(): string {
+    const token = this.user().Token;
+    return token?.token || '';
+  }
+
   public async login(credentials: { email: string, password: string }): Promise<GenericResult> {
     try {
       const result = await firstValueFrom(this.http.post<ApiResponse<LpUser>>('api/user/login', credentials));
