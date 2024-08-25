@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-page',
@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './page.component.scss'
 })
 export class PageComponent {
+  @Input() classes!: string;
 
 }

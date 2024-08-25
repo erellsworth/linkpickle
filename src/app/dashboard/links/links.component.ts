@@ -3,11 +3,12 @@ import { LinkService } from '../../services/link.service';
 import { firstValueFrom } from 'rxjs';
 import { LpLink } from '../../../../api/interfaces/link';
 import { LoadingIndicatorComponent } from '../../pickle-ui/loading-indicator/loading-indicator.component';
+import { LinkPicklerComponent } from '../components/link-pickler/link-pickler.component';
 
 @Component({
   selector: 'app-links',
   standalone: true,
-  imports: [LoadingIndicatorComponent],
+  imports: [LinkPicklerComponent, LoadingIndicatorComponent],
   templateUrl: './links.component.html',
   styleUrl: './links.component.scss'
 })
