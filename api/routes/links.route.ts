@@ -5,8 +5,7 @@ import { errorResponse, successResponse } from "../utils/responses";
 import { Category, Comment, Link, Site, User } from "../models";
 import isAuthenticated from "./auth.midleware";
 import { LpUser } from "../interfaces/user";
-import { LpLink } from "../interfaces/link";
-import { LpCategory } from "../interfaces/category";
+import { LpLink, LpLinkPreview } from "../interfaces/link";
 
 linksRouter.get('/links/category/:id', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
 
@@ -21,6 +20,42 @@ linksRouter.get('/links/category/:id', isAuthenticated, async (req: Request<{ id
         errorResponse(res, (e as Error).message);
     }
 
+});
+
+linksRouter.get('/links/linkPreview', isAuthenticated, async (req: Request<{}, {}, {}, {url: string;}>, res: Response) => {
+    
+    try {
+        const url = new URL(req.query.url);
+
+        const linkRecord = await Link.findByUrl(url.toString());
+    
+        if (linkRecord) {
+            return errorResponse(res, 'Link already exists', 200, linkRecord);
+        }
+
+        const metadata = await urlMetadata(url.toString());
+
+        const domain = url.hostname.replace(/^[^.]+\./g, '');
+
+        const siteName = metadata ? metadata['og:site_name'] : domain;
+
+        const preview: LpLinkPreview = {
+            url: url.toString(),
+            title: metadata.title || metadata['og:title'],
+            description:  metadata.description || metadata['og:description']
+        }
+
+        const img = metadata.image || metadata['og:image'];
+
+        if (img) {
+            preview.thumbnail = img;
+        }
+
+        successResponse(res, {preview, siteName});
+     } catch (e) {
+        errorResponse(res, (e as Error).message);
+    }
+    
 });
 
 linksRouter.get('/links/:page?', isAuthenticated, async (req: Request<{ page: number; }, {}, {}, { limit?: number }>, res: Response) => {

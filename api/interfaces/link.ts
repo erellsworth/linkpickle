@@ -4,16 +4,19 @@ import { LpCategory } from "./category";
 import { LpSite } from "./site";
 import { LpUser } from "./user";
 
-export interface LpLink extends LpBase {
+export interface LpLinkPreview {
     url: string;
     title: string;
     description?: string;
+    thumbnail?: string;
+}
+
+export interface LpLink extends LpBase, LpLinkPreview {
     User: LpUser;
     UserId?: number;
     Categories: LpCategory[];
     Site: LpSite;
     SiteId?: number;
-    thumbnail?: string;
     pinned: boolean;
 }
 

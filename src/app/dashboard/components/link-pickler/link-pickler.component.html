@@ -3,8 +3,8 @@
         <header>
             <div class="field grid col-12">
                 <label for="url" class="col-12 mb-2 md:col-1 md:mb-0">Url:</label>
-                <div [class.col-11]="!squeezebox.collapsed" [class.col-8]="squeezebox.collapsed">
-                    <input type="text" id="url" formControlName="url" placeholder="https://erellsworth.com" />
+                <div class="align-content-center" [class.col-11]="!squeezebox.collapsed" [class.col-9]="squeezebox.collapsed">
+                    <input (paste)="paste($event)" class="m-0" type="text" id="url" formControlName="url" placeholder="https://erellsworth.com" />
                 </div>
                 @if(squeezebox.collapsed){
                 <button type="button" (click)="save()" [disabled]="formGroup.invalid">Save</button>
@@ -15,7 +15,7 @@
             <div class="field grid col-12">
                 <label for="title" class="col-12 mb-2 md:col-1 md:mb-0">Title:</label>
                 <div class="col-12 md:col-11">
-                    <input type="text" id="title" formControlName="title" placeholder="title for link" />
+                    <input class="m-0" type="text" id="title" formControlName="title" placeholder="title for link" />
                 </div>
             </div>
 
@@ -24,17 +24,20 @@
                 <textarea id="description" type="text" formControlName="description" rows="4" class="mx-0"></textarea>
             </div>
             <div class="flex">
-                <div class="field grid col-3">
+                <div class="field grid col-2 align-content-center m-0">
                     <input type="checkbox" id="pinned" formControlName="pinned" class="w-auto" />
                     <label for="pinned" class="col-8 mx-0 px-0">Pin this link?</label>
                 </div>
-
-                <button type="button" (click)="save()" [disabled]="formGroup.invalid">Save</button>
-
+                @if (linkPreview) {
+                    <button type="button" (click)="save()" [disabled]="formGroup.invalid">Save</button>
+                }
             </div>
         </content>
     </app-squeezebox>
-
-
-
 </form>
+
+@if (linkPreview) {
+<div class="w-11 m-auto">
+    <app-link-card [link]="linkPreview"></app-link-card>
+</div>
+}

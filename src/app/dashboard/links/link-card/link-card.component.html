@@ -1,0 +1,16 @@
+<div class="link-card p-3">
+    <div class="flex">
+        @if(link.thumbnail) {
+        <div class="w-3">
+            <img class="p-0" [src]="link.thumbnail"  />
+        </div>
+        }
+        <div class="p-0 pl-3">
+            <h4 class="mt-0">{{link.title}}</h4>
+            @if(link.description){
+                <p class="pt-0">{{ link.description }}</p>
+            }
+        </div>
+    </div>
+    <p>{{link.url}}</p>
+</div>
