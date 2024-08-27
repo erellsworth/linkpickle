@@ -46,7 +46,7 @@ export class UserService {
     }
   }
 
-  public async register(credentials: { email: string, password: string, confirmPassword: string }) {
+  public async register(credentials: { email: string, password: string, confirmPassword: string }):  Promise<GenericResult>  {
     try {
       const result = await firstValueFrom(this.http.post<ApiResponse>('api/user/register', credentials));
 

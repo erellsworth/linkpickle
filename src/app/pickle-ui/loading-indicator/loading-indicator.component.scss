@@ -2,6 +2,14 @@
     animation: loading 1.3s linear infinite;
     display: inline-block;
     font-size: 2rem;
+
+    &.sm {
+        font-size: 1rem;
+    }
+
+    &.lg {
+        font-size: 3rem;
+    }
 }
 
 @keyframes loading {

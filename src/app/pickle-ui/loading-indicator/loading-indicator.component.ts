@@ -14,4 +14,6 @@ export class LoadingIndicatorComponent {
 
   @Input() icon: IconDefinition = faLink;
 
+  @Input() size: string = 'md';
+
 }

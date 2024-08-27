@@ -1,12 +1,16 @@
 <form [formGroup]="formGroup" class="text-center w-11 pt-3">
     <app-squeezebox #squeezebox [collapsed]="true">
         <header>
-            <div class="field grid col-12">
+            <div class="field grid col-12 align-items-center">
                 <label for="url" class="col-12 mb-2 md:col-1 md:mb-0">Url:</label>
                 <div class="align-content-center" [class.col-11]="!squeezebox.collapsed" [class.col-9]="squeezebox.collapsed">
                     <input (paste)="paste($event)" class="m-0" type="text" id="url" formControlName="url" placeholder="https://erellsworth.com" />
                 </div>
+
                 @if(squeezebox.collapsed){
+                    @if(loadingPreview) {
+                        <app-loading-indicator size="sm" />
+                    }
                 <button type="button" (click)="save()" [disabled]="formGroup.invalid">Save</button>
                 }
             </div>

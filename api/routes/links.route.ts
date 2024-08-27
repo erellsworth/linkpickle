@@ -51,7 +51,7 @@ linksRouter.get('/links/linkPreview', isAuthenticated, async (req: Request<{}, {
             preview.thumbnail = img;
         }
 
-        successResponse(res, {preview, siteName});
+        successResponse(res, {preview, siteName, metadata});
      } catch (e) {
         errorResponse(res, (e as Error).message);
     }

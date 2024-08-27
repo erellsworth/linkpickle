@@ -5,6 +5,7 @@ import { SqueezeboxComponent } from '../../../pickle-ui/squeezebox/squeezebox.co
 import { LpLink, LpLinkPreview } from '../../../../../api/interfaces/link';
 import { LinkCardComponent } from '../../links/link-card/link-card.component';
 import { LoadingIndicatorComponent } from '../../../pickle-ui/loading-indicator/loading-indicator.component';
+import { ToasterService } from '../../../services/toaster.service';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -37,14 +38,17 @@ export class LinkPicklerComponent {
     pinned: this.fb.nonNullable.control(false)
   });
 
-  public loading = false;
+  public loadingPreview = false;
 
   private _preview!: {
     preview: LpLinkPreview;
     siteName: string
   };
 
-  constructor(private fb: FormBuilder, private linkService: LinkService) { }
+  constructor(
+    private fb: FormBuilder,
+    private linkService: LinkService,
+    private toaster: ToasterService) { }
 
   public get linkPreview(): LpLink | false {
     if (this._preview) {
@@ -61,6 +65,7 @@ export class LinkPicklerComponent {
   }
 
   public async paste(event: ClipboardEvent): Promise<void> {
+    this.loadingPreview = true;
     const url = event.clipboardData?.getData('text');
 
     const linkPreview = await this.linkService.getLinkPreview(url);
@@ -70,15 +75,34 @@ export class LinkPicklerComponent {
       this.setPreview(url as string, linkPreview.preview);      
     }
 
+    this.loadingPreview = false;
+
   }
 
-  public save() { }
+  public async save(): Promise<void> { 
+    const link = this.formGroup.getRawValue() as unknown as LpLink;
+    const result = await this.linkService.saveLink(link);
+
+    if (typeof result === 'string') {
+      this.toaster.add({
+        title: 'Error',
+        message: result,
+        severity: 'error'
+      });
+    } else {
+      this.toaster.add({
+        title: 'Success',
+        message: 'Link Saved',
+        severity: 'success'
+      });
+    }
+  }
 
   private setPreview(url: string, preview: LpLinkPreview): void {
     this.formGroup.get('url')?.setValue(url);
 
     if (!this.formGroup.value.title) {
-      this.formGroup.get('title')?.setValue(preview.title);
+      this.formGroup.get('title')?.setValue(preview.title || url);
     }
 
     if (preview.description && !this.formGroup.value.description) {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom, map, Observable, of } from 'rxjs';
+import {  firstValueFrom, Subject } from 'rxjs';
 import { LpLink, LpLinkPreview } from '../../../api/interfaces/link';
 import { ApiResponse, PaginatedApiResponse, PaginatedResults } from '../../../api/interfaces/api';
 
@@ -9,27 +9,29 @@ import { ApiResponse, PaginatedApiResponse, PaginatedResults } from '../../../ap
 })
 export class LinkService {
 
+  public linksUpdated$ = new Subject<void>();
+
   constructor(private http: HttpClient) { }
 
-  public getLinks$(page: number): Observable<PaginatedResults<LpLink>> {
+  public async getLinks(page: number): Promise<PaginatedResults<LpLink>> {
     try {
-      return this.http.get<PaginatedApiResponse<LpLink>>(`api/links/${page}`).pipe(map(result => {
-        if (result.success) {
-          return result.data as PaginatedResults<LpLink>;
-        }
+      const result = await firstValueFrom(this.http.get<PaginatedApiResponse<LpLink>>(`api/links/${page}`));
+      
+      if (result.success) {
+        return result.data as PaginatedResults<LpLink>;
+      }
 
-        return {
-          contents: [],
-          total: 0,
-          page
-        };
-      }));
-    } catch (e) {
-      return of({
+      return {
         contents: [],
         total: 0,
         page
-      });
+      };
+    } catch (e) {
+      return {
+        contents: [],
+        total: 0,
+        page
+      };
     }
   }
 
@@ -51,6 +53,24 @@ export class LinkService {
       return urlData.success ? urlData.data as { preview: LpLinkPreview; siteName: string; } : false;
     } catch (e) {
       return false;
+    }
+  }
+
+  public async saveLink(link: LpLink): Promise<LpLink | string> {
+    try {
+      const result = await firstValueFrom(this.http.post<ApiResponse<LpLink>>('api/links', {
+        link,
+        categoryIds: []
+      }));
+
+      if (result.success) {
+        this.linksUpdated$.next();
+        return result.data as LpLink;
+      }
+
+      return result.error?.message || 'Unknown Error'
+     } catch (e) {
+      return (e as Error).message || 'Unknown Error'
     }
   }
 

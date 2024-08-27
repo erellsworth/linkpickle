@@ -1,16 +1,20 @@
-<div class="link-card p-3">
+<div class="link-card p-3" [class.preview]="!link.id">
     <div class="flex">
         @if(link.thumbnail) {
-        <div class="w-3">
-            <img class="p-0" [src]="link.thumbnail"  />
+        <div class="thumbnail pr-2">
+            <a [href]="link.url" target="_blank">
+                <img class="p-0" [src]="link.thumbnail"  />
+                </a>
         </div>
         }
-        <div class="p-0 pl-3">
-            <h4 class="mt-0">{{link.title}}</h4>
+        <div class="p-0">
+            <h4 class="mt-0">
+                <a [href]="link.url" target="_blank">{{link.title}}</a>
+            </h4>
             @if(link.description){
                 <p class="pt-0">{{ link.description }}</p>
             }
         </div>
     </div>
-    <p>{{link.url}}</p>
+    <p><a [href]="link.url" target="_blank">{{link.url}}</a></p>
 </div>
