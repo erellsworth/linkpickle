@@ -40,10 +40,10 @@ export class LinkPicklerComponent {
 
   public loadingPreview = false;
 
-  private _preview!: {
+  private _preview: {
     preview: LpLinkPreview;
     siteName: string
-  };
+  } | undefined;
 
   constructor(
     private fb: FormBuilder,
@@ -70,9 +70,16 @@ export class LinkPicklerComponent {
 
     const linkPreview = await this.linkService.getLinkPreview(url);
 
-    if (linkPreview) {
+    if (typeof linkPreview === 'string') {
+      this.toaster.add({
+        title: 'Error',
+        message: linkPreview,
+        severity: 'error'
+      });
+      this.formGroup.reset();
+    } else {
       this._preview = linkPreview;
-      this.setPreview(url as string, linkPreview.preview);      
+      this.setPreview(url as string, linkPreview.preview);   
     }
 
     this.loadingPreview = false;
@@ -90,11 +97,13 @@ export class LinkPicklerComponent {
         severity: 'error'
       });
     } else {
+      this.formGroup.reset();
       this.toaster.add({
         title: 'Success',
         message: 'Link Saved',
         severity: 'success'
       });
+      this._preview = undefined;
     }
   }
 

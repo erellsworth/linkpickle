@@ -35,10 +35,10 @@ export class LinkService {
     }
   }
 
-  public async getLinkPreview(url?: string): Promise<{ preview: LpLinkPreview; siteName: string; } | false> {
+  public async getLinkPreview(url?: string): Promise<{ preview: LpLinkPreview; siteName: string; } | string> {
     const validUrl = this.getValidUrl(url);
     
-    if (!validUrl) { return false; }
+    if (!validUrl) { return 'URL is not valid'; }
 
     try {
       const urlData = await firstValueFrom(this.http.get<ApiResponse<{
@@ -50,9 +50,9 @@ export class LinkService {
         }
       }));
 
-      return urlData.success ? urlData.data as { preview: LpLinkPreview; siteName: string; } : false;
+      return urlData.success ? urlData.data as { preview: LpLinkPreview; siteName: string; } : urlData.error?.message || 'Unknown Error';
     } catch (e) {
-      return false;
+      return (e as Error).message || 'Unknown Error';
     }
   }
 
