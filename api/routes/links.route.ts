@@ -6,6 +6,7 @@ import { Category, Comment, Link, Site, User } from "../models";
 import isAuthenticated from "./auth.midleware";
 import { LpUser } from "../interfaces/user";
 import { LpLink, LpLinkPreview } from "../interfaces/link";
+import { LpCategory } from "../interfaces/category";
 
 linksRouter.get('/links/category/:id', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
 
@@ -86,7 +87,7 @@ linksRouter.get('/link/:id', isAuthenticated, async (req: Request<{ id: number; 
 
 });
 
-linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLink, categoryIds: number[] }>, res: Response) => {
+linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLink, categories: LpCategory[] }>, res: Response) => {
 
     if (!req.body.link || !req.body.link.url) {
         return errorResponse(res, "Missing required link data", 400);
@@ -124,8 +125,21 @@ linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLi
 
         const newLink = await Link.model.create(link);
 
+        const newCategories = req.body.categories.filter((cat: LpCategory) => !Boolean(cat.id));
+        
+        const newCatIds: number[] = [];
+
+        for (const cat of newCategories) {
+            const newCat = await Category.model.create(cat);
+            newCatIds.push(newCat.id);
+        }
+
+        const categoryIds: number[] = req.body.categories.filter((cat: LpCategory) => Boolean(cat.id))
+            .map((cat: LpCategory) => cat.id).concat(newCatIds);
+        
+        
         // @ts-ignore
-        newLink.addCategories(req.body.categoryIds);
+        newLink.addCategories(categoryIds);
 
         successResponse(res, newLink);
     } catch (e) {

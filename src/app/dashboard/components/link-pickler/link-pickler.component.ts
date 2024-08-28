@@ -6,6 +6,7 @@ import { LpLink, LpLinkPreview } from '../../../../../api/interfaces/link';
 import { LinkCardComponent } from '../../links/link-card/link-card.component';
 import { LoadingIndicatorComponent } from '../../../pickle-ui/loading-indicator/loading-indicator.component';
 import { ToasterService } from '../../../services/toaster.service';
+import { CategorySelectorComponent } from './category-selector/category-selector.component';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -19,6 +20,7 @@ interface LinkForm {
   selector: 'app-link-pickler',
   standalone: true,
   imports: [
+    CategorySelectorComponent,
     LinkCardComponent,
     LoadingIndicatorComponent,
     ReactiveFormsModule,

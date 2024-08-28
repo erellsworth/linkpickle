@@ -1,1 +1,26 @@
-<p>category-selector works!</p>
+<div class="category-selector text-left">
+    <label for="category" class="block pl-1">Category</label>
+    <app-tooltip [message]="tooltipMessage" [visible]="showTooltip">
+        <input id="category" class="inline-block w-7 mt-0 ml-1" type="text" (change)="addNewCategory()" [(ngModel)]="category" />
+    </app-tooltip>
+    @if (category && !suggestions.length) {
+        <button type="button" class="w-2 mt-0" (click)="addNewCategory()">
+            <fa-icon [icon]="icons.add" />
+        </button>
+    }
+
+    <ul class="category-autocomplete">
+        @for (cat of suggestions; track $index) {
+            <li (click)="handelSelection(cat)">{{cat.name}}</li>
+        }
+    </ul>
+
+    <ul class="category-list">
+        @for (cat of selecteCategories; track $index) {
+            <li>
+                {{cat.name}}
+                <span (click)="unselectCategory(cat)"><fa-icon [icon]="icons.remove"/></span>
+            </li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,23 @@
+.category {
+    ul {
+        list-style-type: none;
+    }
+    
+    &-list {
+        padding: 0 .25rem;
+        margin: 0 .25rem;
+        li {
+            background: var(--secondary-dark);
+            color: #ffffff;
+            padding: .5rem;
+            border-radius: .5rem;
+            display: inline-block;
+            margin: .25rem;
+            
+            span {
+                padding-left: .25rem;
+                cursor: pointer;
+            }
+        }
+    }
+}
