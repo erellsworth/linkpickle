@@ -3,9 +3,38 @@
     .tooltip {
         position: absolute;
         display: none;
+        padding: .25rem;
+        opacity: .8;
+        text-align: center;
+        color: #ffffff;
+        border-radius: .25rem;
+
+        &.error {
+            background: var(--severity-error);
+        }
+
+        &.info {
+            background: var(--severity-info);
+            color: var(--primary-dark);
+        }
+
+        &.success {
+            background: var(--severity-success);
+        }
+
+        &.warning {
+            background: var(--severity-warning);
+            color: var(--primary-dark);
+        }
 
         &.visible {
             display: block;
+        }
+
+        &.top-right {
+            bottom: 100%;
+            left: 50%;
+            width: 90%
         }
     }
 }
