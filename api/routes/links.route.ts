@@ -123,8 +123,6 @@ linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLi
             link.thumbnail = img;
         }
 
-        const newLink = await Link.model.create(link);
-
         const newCategories = req.body.categories.filter((cat: LpCategory) => !Boolean(cat.id));
         
         const newCatIds: number[] = [];
@@ -137,6 +135,8 @@ linksRouter.post('/links', isAuthenticated, async (req: Request<{}, { link: LpLi
         const categoryIds: number[] = req.body.categories.filter((cat: LpCategory) => Boolean(cat.id))
             .map((cat: LpCategory) => cat.id).concat(newCatIds);
         
+
+        const newLink = await Link.model.create(link);
         
         // @ts-ignore
         newLink.addCategories(categoryIds);

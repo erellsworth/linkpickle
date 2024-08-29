@@ -19,17 +19,17 @@ export class CategorySelectorComponent implements OnInit {
 
   public addIcon = faPlusCircle;
   public categories: LpCategory[] = [];
-  public category!: string;
+  public category = '';
   public icons = {
     add: faPlusCircle,
     remove: faRemove
   };
-  public tooltipMessage!: string;
+  public tooltipMessage = '';
 
   constructor(private categoryService: CategoryService) { }
   
   async ngOnInit(): Promise<void> {
-    this.categories = await this.categoryService.getCategories();
+  this.categories = await this.categoryService.getCategories();
   }
 
   public get showTooltip(): boolean {
@@ -38,38 +38,56 @@ export class CategorySelectorComponent implements OnInit {
 
   public get suggestions(): LpCategory[] {
     if (!this.category) { return []; }
-    return this.categories.map(cat => {
-      return {
-        ...cat,
-        ...{ name: cat.name.toLowerCase() }
-      }
-    }).filter(cat => cat.name.includes(this.category.toLowerCase()));
-      // .filter(cat => { 
-      //   return !this.selecteCategories
-      //     .map(cat => cat.name.toLowerCase())
-      //     .includes(cat.name.toLowerCase());
-      // });
+    return this.categories
+      .filter(cat => cat.name.toLowerCase().includes(this.category.toLowerCase()))
+      .filter(cat => { 
+        return !this.selecteCategories
+          .map(cat => cat.name.toLowerCase())
+          .includes(cat.name.toLowerCase());
+      });
   }
 
   public addNewCategory(): void {
     if (this.categories.map(cat => cat.name.toLowerCase()).includes(this.category.toLowerCase())) {
-      this.tooltipMessage = "Category already exists!";
-     }
-    
+      this.selectByName(this.category);
+      return;
+    }
+
     const newCat = this.categoryService.getTempCategory(this.category);
-    this.categories.push(newCat)
+    this.categories.push(newCat);
     this.selecteCategories.push(newCat);
-    this.category = '';
     this.selectionChanged.emit(this.selecteCategories);
+    this.category = '';
   }
 
   public handelSelection(category: LpCategory): void {
     this.selecteCategories.push(category);
     this.selectionChanged.emit(this.selecteCategories);
+    this.category = '';
+    this.tooltipMessage = '';
   }
 
   public unselectCategory(category: LpCategory): void {
     this.selecteCategories = this.selecteCategories.filter(cat => cat.name !== category.name);
     this.selectionChanged.emit(this.selecteCategories);
+  }
+
+  public reset(): void {
+    this.selecteCategories = [];
+    this.category = '';
+    this.tooltipMessage = '';
+  }
+
+  private selectByName(name: string): void {
+    const category = this.categories.find(cat => cat.name.toLowerCase() === name.toLowerCase());
+
+    if (this.selecteCategories.map(cat => cat.name.toLowerCase()).includes(name.toLowerCase())) {
+      this.tooltipMessage = "Category already selected";
+      return;
+    }
+    
+    if (category) {
+      this.handelSelection(category);
+    }
   }
 }

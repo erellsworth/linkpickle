@@ -26,8 +26,6 @@ export class ToasterService {
     if (!toast.sticky) {
       this.delayedDismiss(toast);
     }
-
-    console.log('added', this.toasts());
   }
 
   public dismiss(id: number): void {

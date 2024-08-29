@@ -11,7 +11,7 @@ import { faChevronDown, faChevronUp, IconDefinition } from '@fortawesome/free-so
 })
 export class SqueezeboxComponent {
 
-  @Input() collapsed = false;
+  @Input() collapsed = true;
 
   public icons = {
     up: faChevronUp,

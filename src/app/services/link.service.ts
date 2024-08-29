@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import {  firstValueFrom, Subject } from 'rxjs';
 import { LpLink, LpLinkPreview } from '../../../api/interfaces/link';
 import { ApiResponse, PaginatedApiResponse, PaginatedResults } from '../../../api/interfaces/api';
+import { LpCategory } from '../../../api/interfaces/category';
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +57,11 @@ export class LinkService {
     }
   }
 
-  public async saveLink(link: LpLink): Promise<LpLink | string> {
+  public async saveLink(link: LpLink, categories: LpCategory[] =[]): Promise<LpLink | string> {
     try {
       const result = await firstValueFrom(this.http.post<ApiResponse<LpLink>>('api/links', {
         link,
-        categoryIds: []
+        categories
       }));
 
       if (result.success) {

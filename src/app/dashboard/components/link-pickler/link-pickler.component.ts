@@ -7,12 +7,13 @@ import { LinkCardComponent } from '../../links/link-card/link-card.component';
 import { LoadingIndicatorComponent } from '../../../pickle-ui/loading-indicator/loading-indicator.component';
 import { ToasterService } from '../../../services/toaster.service';
 import { CategorySelectorComponent } from './category-selector/category-selector.component';
+import { LpCategory } from '../../../../../api/interfaces/category';
 
 interface LinkForm {
   url: FormControl<string>;
   title: FormControl<string>;
   description: FormControl<string>;
-  categoryIds: FormControl<number[]>;
+  categories: FormControl<LpCategory[]>;
   pinned: FormControl<boolean>;
 }
 
@@ -31,12 +32,13 @@ interface LinkForm {
 export class LinkPicklerComponent {
 
   @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
+  @ViewChild('categorySelector') categorySelector!: CategorySelectorComponent;
 
   public formGroup: FormGroup<LinkForm> = this.fb.group({
     url: this.fb.nonNullable.control('', Validators.required),
     title: this.fb.nonNullable.control('', Validators.required),
     description: this.fb.nonNullable.control(''),
-    categoryIds: this.fb.nonNullable.control([] as number[]),
+    categories: this.fb.nonNullable.control([] as LpCategory[]),
     pinned: this.fb.nonNullable.control(false)
   });
 
@@ -66,6 +68,10 @@ export class LinkPicklerComponent {
     return false;
   }
 
+  public updateCategories(categories: LpCategory[]): void {
+    this.formGroup.get('categories')?.setValue(categories);
+  }
+
   public async paste(event: ClipboardEvent): Promise<void> {
     this.loadingPreview = true;
     const url = event.clipboardData?.getData('text');
@@ -89,8 +95,10 @@ export class LinkPicklerComponent {
   }
 
   public async save(): Promise<void> { 
-    const link = this.formGroup.getRawValue() as unknown as LpLink;
-    const result = await this.linkService.saveLink(link);
+    const link = this.formGroup.value as unknown as LpLink;
+    const categories = this.formGroup.value.categories;
+
+    const result = await this.linkService.saveLink(link, categories);
 
     if (typeof result === 'string') {
       this.toaster.add({
@@ -100,6 +108,7 @@ export class LinkPicklerComponent {
       });
     } else {
       this.formGroup.reset();
+      this.categorySelector.reset();
       this.toaster.add({
         title: 'Success',
         message: 'Link Saved',
@@ -112,11 +121,10 @@ export class LinkPicklerComponent {
   private setPreview(url: string, preview: LpLinkPreview): void {
     this.formGroup.get('url')?.setValue(url);
 
-    if (!this.formGroup.value.title) {
       this.formGroup.get('title')?.setValue(preview.title || url);
-    }
+    
 
-    if (preview.description && !this.formGroup.value.description) {
+    if (preview.description) {
       this.formGroup.get('description')?.setValue(preview.description);
     }
 

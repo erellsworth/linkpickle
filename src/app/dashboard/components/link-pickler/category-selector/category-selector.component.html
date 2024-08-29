@@ -1,26 +1,52 @@
 <div class="category-selector text-left">
-    <label for="category" class="block pl-1">Category</label>
-    <app-tooltip [message]="tooltipMessage" [visible]="showTooltip">
-        <input id="category" class="inline-block w-7 mt-0 ml-1" type="text" (change)="addNewCategory()" [(ngModel)]="category" />
-    </app-tooltip>
-    @if (category && !suggestions.length) {
-        <button type="button" class="w-2 mt-0" (click)="addNewCategory()">
-            <fa-icon [icon]="icons.add" />
-        </button>
-    }
+  <div class="flex align-items-end">
+    <div class="relative">
+      <label for="category" class="block pl-1">Category</label>
 
-    <ul class="category-autocomplete">
+      <app-tooltip
+        [message]="tooltipMessage"
+        [visible]="showTooltip"
+        severity="error"
+      >
+        <input
+          id="category"
+          class="inline-block my-0 mx-1"
+          [class.active]="suggestions.length"
+          type="text"
+          (input)="tooltipMessage = ''"
+          (keydown.enter)="addNewCategory()"
+          [(ngModel)]="category"
+        />
+      </app-tooltip>
+      <!-- TODO: Create autocomplete component -->
+      <ul
+        class="category-autocomplete m-0"
+        [class.visible]="suggestions.length"
+      >
         @for (cat of suggestions; track $index) {
-            <li (click)="handelSelection(cat)">{{cat.name}}</li>
+        <li (click)="handelSelection(cat)">{{ cat.name }}</li>
         }
-    </ul>
+      </ul>
+    </div>
+    <button type="button" class="m-0" (click)="addNewCategory()">
+      <fa-icon [icon]="icons.add" />
+    </button>
+  </div>
 
-    <ul class="category-list">
-        @for (cat of selecteCategories; track $index) {
-            <li>
-                {{cat.name}}
-                <span (click)="unselectCategory(cat)"><fa-icon [icon]="icons.remove"/></span>
-            </li>
-        }
-    </ul>
+  <ul class="category-list">
+    @for (cat of selecteCategories; track $index) {
+    <app-tooltip
+      message="Will create on save"
+      [showOnHover]="!cat.id"
+      severity="warning"
+    >
+      <li [class.new]="!cat.id">
+        {{ cat.name }}
+        <span (click)="unselectCategory(cat)"
+          ><fa-icon [icon]="icons.remove"
+        /></span>
+      </li>
+    </app-tooltip>
+    }
+  </ul>
 </div>
