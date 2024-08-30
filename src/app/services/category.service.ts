@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { LpCategory } from '../../../api/interfaces/category';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../../../api/interfaces/api';
@@ -9,23 +9,30 @@ import { ApiResponse } from '../../../api/interfaces/api';
 })
 export class CategoryService {
 
-  constructor(private http: HttpClient) { }
+  public categories = signal<LpCategory[]>([]);
 
-  public async getCategories(): Promise<LpCategory[]> {
-    try { 
-      const results = await firstValueFrom(this.http.get<ApiResponse<LpCategory[]>>('api/categories'));
-      if (results.success) {
-        return results.data as LpCategory[];
-      }
-      return [];
-    } catch (e) {
-      return [];
-    }
+  constructor(private http: HttpClient) { 
+    this.loadCategories();
+  }
+
+  public getCategoryById(id: number): LpCategory | undefined {
+    return this.categories().find(cat => cat.id === id);
   }
 
   public getTempCategory(name: string): LpCategory {
     return {
       name
     } as LpCategory
+  }
+
+  public async loadCategories(): Promise<void> {
+    try { 
+      const results = await firstValueFrom(this.http.get<ApiResponse<LpCategory[]>>('api/categories'));
+      if (results.success) {
+        this.categories.set(results.data as LpCategory[]);
+      }
+    } catch (e) {
+      console.error('error loading categoires');
+    }
   }
 }

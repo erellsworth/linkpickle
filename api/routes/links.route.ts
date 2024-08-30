@@ -8,7 +8,7 @@ import { LpUser } from "../interfaces/user";
 import { LpLink, LpLinkPreview } from "../interfaces/link";
 import { LpCategory } from "../interfaces/category";
 
-linksRouter.get('/links/category/:id', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
+linksRouter.get('/links/category/:id/:page?', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
 
     const page = req.params.page || 1;
     const limit = req.query.limit || 9;

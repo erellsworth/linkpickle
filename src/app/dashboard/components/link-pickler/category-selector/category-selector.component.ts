@@ -13,12 +13,11 @@ import { TooltipComponent } from '../../../../pickle-ui/tooltip/tooltip.componen
   templateUrl: './category-selector.component.html',
   styleUrl: './category-selector.component.scss'
 })
-export class CategorySelectorComponent implements OnInit {
+export class CategorySelectorComponent {
   @Input() selecteCategories: LpCategory[] = [];
   @Output() selectionChanged = new EventEmitter<LpCategory[]>();
 
   public addIcon = faPlusCircle;
-  public categories: LpCategory[] = [];
   public category = '';
   public icons = {
     add: faPlusCircle,
@@ -28,8 +27,8 @@ export class CategorySelectorComponent implements OnInit {
 
   constructor(private categoryService: CategoryService) { }
   
-  async ngOnInit(): Promise<void> {
-  this.categories = await this.categoryService.getCategories();
+  public get categories() {
+    return this.categoryService.categories();
   }
 
   public get showTooltip(): boolean {
@@ -76,6 +75,7 @@ export class CategorySelectorComponent implements OnInit {
     this.selecteCategories = [];
     this.category = '';
     this.tooltipMessage = '';
+    this.categoryService.loadCategories();
   }
 
   private selectByName(name: string): void {

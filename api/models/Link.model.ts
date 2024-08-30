@@ -1,10 +1,11 @@
-import { DataTypes, FindAndCountOptions, ModelAttributes } from "sequelize";
+import { DataTypes, FindAndCountOptions, ModelAttributes, Op } from "sequelize";
 import { db } from "../utils/db";
 import { LpLink, LpLinkInstance } from "../interfaces/link";
 import { PaginatedResults } from "../interfaces/api";
 import { Site } from "./Site.model";
 import { Comment } from "./Comment.model";
 import { Category } from "./Category.model";
+import { User } from "./User.model";
 
 const attributes: ModelAttributes<LpLinkInstance> = {
     url: {
@@ -19,6 +20,11 @@ const attributes: ModelAttributes<LpLinkInstance> = {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: 0
+    },
+    public: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 1
     },
     description: {
         type: DataTypes.STRING,
@@ -53,11 +59,6 @@ const LinkModel = db.define<LpLinkInstance>('Link', attributes);
 
 const Link = {
     model: LinkModel,
-    create: async (link: LpLink) => {
-        if (!link.SiteId) {
-
-        }
-    },
     findByUrl: async (url: string) => {
         return LinkModel.findOne({
             where: {
@@ -68,7 +69,7 @@ const Link = {
     findByUserId: async (UserId: number, page: number, limit: number): Promise<PaginatedResults<LpLink>> => {
         const options: FindAndCountOptions = {
             where: {
-                UserId
+                [Op.or]: [{ UserId }, {public: 1}]
             },
             order: [['createdAt', 'DESC']],
             distinct: true,
@@ -97,21 +98,35 @@ const Link = {
 
         return LinkModel.findAndCountAll(options)
     },
-    findByCategoryId: async (UserId: number, id: number, page: number, limit: number): Promise<{ rows: LpLink[]; count: number }> => {
+    findByCategoryId: async (UserId: number, id: number, page: number, limit: number):  Promise<PaginatedResults<LpLink>> => {
         const options: FindAndCountOptions = {
             where: {
-                '$Category.id$': id,
-                UserId
+                [Op.or]: [{UserId}, {public: 1}]
             },
             order: [['createdAt', 'DESC']],
             distinct: true,
             limit,
             offset: (page - 1) * limit,
-            include: [Comment.model, Site.model]
-
+            include: [
+                {
+                    model: Category.model,
+                    where: {
+                        id
+                    }
+                },
+                Comment.model,
+                Site.model,
+                User.model
+            ]
         };
 
-        return LinkModel.findAndCountAll(options);
+        const { count, rows } = await LinkModel.findAndCountAll(options);
+
+        return {
+            contents: rows,
+            total: count,
+            page
+        };
     },
     findAll: async (): Promise<{ rows: LpLink[]; count: number }> => {
         return LinkModel.findAndCountAll({

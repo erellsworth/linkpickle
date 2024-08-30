@@ -36,6 +36,27 @@ export class LinkService {
     }
   }
 
+  public async getLinksByCategoryId(id: number, page: number): Promise<PaginatedResults<LpLink>> {
+    try {
+      const result = await firstValueFrom(this.http.get<PaginatedApiResponse<LpLink>>(`api/links/category/${id}/${page}`));
+      
+      if (result.success) {
+        return result.data as PaginatedResults<LpLink>;
+      }
+
+      return {
+        contents: [],
+        total: 0,
+        page
+      };
+    } catch (e) {
+      return {
+        contents: [],
+        total: 0,
+        page
+      };
+    }
+  }
   public async getLinkPreview(url?: string): Promise<{ preview: LpLinkPreview; siteName: string; } | string> {
     const validUrl = this.getValidUrl(url);
     

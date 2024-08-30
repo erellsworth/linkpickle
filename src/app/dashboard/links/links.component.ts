@@ -23,7 +23,6 @@ export class LinksComponent implements OnInit, OnDestroy {
   public page = 1;
   public total = 0;
   
-
   private _subs: Subscription[] = [];
 
   constructor(private linkService: LinkService) { }

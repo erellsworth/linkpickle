@@ -1,1 +1,7 @@
-<p>navigation works!</p>
+<ul>
+  @for (cat of categories; track $index) {
+  <li>
+    <a href="/category/{{ cat.id }}">{{ cat.name }}</a>
+  </li>
+  }
+</ul>

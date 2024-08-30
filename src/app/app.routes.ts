@@ -5,24 +5,24 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { RecoverComponent } from './auth/recover/recover.component';
 import { LinksComponent } from './dashboard/links/links.component';
+import { CategoryComponent } from './dashboard/category/category.component';
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'links',
-        pathMatch: 'full'
-    },
-    {
-        path: 'links',
         component: DashboardComponent,
-        canActivate: [userGuard],
+        canActivateChild: [userGuard],
         children: [
             {
-                path: '',
+                path: 'category/:id',
+                component: CategoryComponent
+            },
+            {
+                path: 'links',
                 component: LinksComponent
             },
             {
-                path: ':page',
+                path: 'links/:page',
                 component: LinksComponent
             }
         ]
