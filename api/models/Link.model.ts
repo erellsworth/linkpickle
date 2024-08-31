@@ -1,4 +1,4 @@
-import { DataTypes, FindAndCountOptions, ModelAttributes, Op } from "sequelize";
+import { DataTypes, FindAndCountOptions, Includeable, ModelAttributes, Op, Order, WhereOptions } from "sequelize";
 import { db } from "../utils/db";
 import { LpLink, LpLinkInstance } from "../interfaces/link";
 import { PaginatedResults } from "../interfaces/api";
@@ -6,6 +6,7 @@ import { Site } from "./Site.model";
 import { Comment } from "./Comment.model";
 import { Category } from "./Category.model";
 import { User } from "./User.model";
+import { LpLinkQuery } from "../interfaces/query";
 
 const attributes: ModelAttributes<LpLinkInstance> = {
     url: {
@@ -21,7 +22,7 @@ const attributes: ModelAttributes<LpLinkInstance> = {
         allowNull: false,
         defaultValue: 0
     },
-    public: {
+    isPublic: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: 1
@@ -132,6 +133,69 @@ const Link = {
         return LinkModel.findAndCountAll({
             include: [Category.model, Comment.model, Site.model]
         });
+    },
+    search: async (UserId: number, query: LpLinkQuery): Promise<PaginatedResults<LpLink>> => {
+
+        const limit = query.limit || 10;
+        const page = query.page || 1;
+        const isPublic = query.isPublic === undefined ? 1 : query.isPublic;
+
+        const where: WhereOptions = {
+            [Op.or]: [{ UserId }, { isPublic: 1 }],
+            isPublic
+        };
+
+        if (query.title) {
+            where.title = {[Op.substring]: query.title}
+        }
+
+        if (query.siteId) {
+            where.SiteId = query.siteId;
+        }
+
+        if (query.keywords) {
+            where.description = {
+                [Op.or]: query.keywords.map(keyword => {
+                    return { [Op.substring]: keyword }
+                })
+            }
+        }
+
+        const order: Order = [[query.orderBy || 'createdAt', query.order || 'DESC']];
+      
+        const include: Includeable[] = [
+            Comment.model,
+            Site.model,
+            User.model
+        ];
+
+        if (query.categoryIds) {
+            include.push({
+                model: Category.model,
+                where: {
+                    id: { [Op.in]: query.categoryIds }
+                }
+            })
+        } else {
+            include.push(Category.model);
+        }
+
+        const options: FindAndCountOptions = {
+            where,
+            order,
+            distinct: true,
+            limit,
+            offset: (page - 1) * limit,
+            include
+        };
+
+        const { count, rows } = await LinkModel.findAndCountAll(options);
+
+        return {
+            contents: rows,
+            total: count,
+            page
+        };
     }
 };
 

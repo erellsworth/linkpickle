@@ -18,7 +18,7 @@ export interface LpLink extends LpBase, LpLinkPreview {
     Site: LpSite;
     SiteId?: number;
     pinned: boolean;
-    public: boolean;
+    isPublic: boolean;
 }
 
 export interface LpLinkCreationAttributes extends Optional<LpLink, "id"> { }

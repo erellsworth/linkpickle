@@ -7,6 +7,22 @@ import isAuthenticated from "./auth.midleware";
 import { LpUser } from "../interfaces/user";
 import { LpLink, LpLinkPreview } from "../interfaces/link";
 import { LpCategory } from "../interfaces/category";
+import { LpLinkQuery } from "../interfaces/query";
+
+linksRouter.get('/links/search', isAuthenticated, async (req: Request<{}, {}, {}, LpLinkQuery>, res: Response) => {
+    
+    if (!req.query) {
+        return errorResponse(res, 'Query missing');
+    }
+
+    try {
+        const user = req.user as LpUser;
+        const links = await Link.search(user.id, req.query);
+        successResponse(res, links);
+     } catch (e) {
+        errorResponse(res, (e as Error).message);
+    }
+});
 
 linksRouter.get('/links/category/:id/:page?', isAuthenticated, async (req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>, res: Response) => {
 
