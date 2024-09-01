@@ -7,6 +7,12 @@ ul {
       color: var(--secondary-color);
       padding: 0.5rem;
       display: block;
+
+      &.active {
+        border-bottom: 1px solid var(--primary-color);
+        border-left: 2px solid var(--primary-color);
+        border-bottom-left-radius: 1rem;
+      }
     }
   }
 }

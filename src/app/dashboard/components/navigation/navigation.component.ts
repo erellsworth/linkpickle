@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { CategoryService } from '../../../services/category.service';
 import { LpCategory } from '../../../../../api/interfaces/category';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faHome, faJ, faJar } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [FontAwesomeModule, RouterLink],
+  imports: [FontAwesomeModule, RouterLink, RouterLinkActive],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss',
 })
