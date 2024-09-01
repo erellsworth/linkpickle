@@ -1,39 +1,39 @@
-import { Request, Response } from "express";
-import categoriesRouter from "./router";
-import { errorResponse, successResponse } from "../utils/responses";
-import { Category, Link } from "../models";
-import isAuthenticated from "./auth.midleware";
-import { LpUser } from "../interfaces/user";
-import { LpLink } from "../interfaces/link";
-import { LpCategory } from "../interfaces/category";
+import { Request, Response } from 'express';
+import categoriesRouter from './router';
+import { errorResponse, successResponse } from '../utils/responses';
+import { Category, Link } from '../models';
+import isAuthenticated from './auth.midleware';
+import { LpCategory } from '../interfaces/category';
 
-categoriesRouter.get('/categories', isAuthenticated, async (req: Request, res: Response) => {
-
+categoriesRouter.get(
+  '/categories',
+  isAuthenticated,
+  async (req: Request, res: Response) => {
     try {
-        const cats = await Category.model.findAll({
-            include: [
-                { as: 'Children', model: Category.model }
-            ]
-        });
-        successResponse(res, cats);
+      const cats = await Category.model.findAll({
+        include: [{ as: 'Children', model: Category.model }, Link.model],
+      });
+      successResponse(res, cats);
     } catch (e) {
-        errorResponse(res, (e as Error).message);
+      errorResponse(res, (e as Error).message);
     }
+  }
+);
 
-});
-
-categoriesRouter.post('/categories', isAuthenticated, async (req: Request<{}, { category: LpCategory }>, res: Response) => {
-
+categoriesRouter.post(
+  '/categories',
+  isAuthenticated,
+  async (req: Request<{}, { category: LpCategory }>, res: Response) => {
     try {
-        const { category } = req.body;
+      const { category } = req.body;
 
-        const newCat = await Category.model.create(category);
+      const newCat = await Category.model.create(category);
 
-        successResponse(res, newCat);
+      successResponse(res, newCat);
     } catch (e) {
-        errorResponse(res, (e as Error).message);
+      errorResponse(res, (e as Error).message);
     }
-
-});
+  }
+);
 
 export default categoriesRouter;
