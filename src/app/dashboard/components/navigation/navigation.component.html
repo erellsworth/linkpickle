@@ -1,9 +1,16 @@
 <ul>
-  <li><a [routerLink]="['/']">Home</a></li>
-
+  <li>
+    <a [routerLink]="['/']"><fa-icon class="p-2" [icon]="icons.home" />Home</a>
+  </li>
+</ul>
+<h4>Categories:</h4>
+<ul>
   @for (cat of categories; track $index) {
   <li>
-    <a [routerLink]="['category', cat.id]">{{ cat.name }}</a>
+    <a [routerLink]="['category', cat.id]">
+      <fa-icon [icon]="icons.jar" class="p-2" />
+      {{ cat.name }} ({{ cat.Links?.length || 0 }})
+    </a>
   </li>
   }
 </ul>
