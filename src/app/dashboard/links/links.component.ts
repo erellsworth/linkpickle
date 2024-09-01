@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { LinkService } from '../../services/link.service';
-import { firstValueFrom, Subscription } from 'rxjs';
 import { LpLink } from '../../../../api/interfaces/link';
 import { LoadingIndicatorComponent } from '../../pickle-ui/loading-indicator/loading-indicator.component';
 import { LinkPicklerComponent } from '../components/link-pickler/link-pickler.component';
 import { LinkCardComponent } from './link-card/link-card.component';
+import { LpLinkQuery } from '../../../../api/interfaces/query';
 
 @Component({
   selector: 'app-links',
@@ -16,34 +16,38 @@ import { LinkCardComponent } from './link-card/link-card.component';
   templateUrl: './links.component.html',
   styleUrl: './links.component.scss'
 })
-export class LinksComponent implements OnInit, OnDestroy {
+export class LinksComponent implements OnChanges {
 
-  public links: LpLink[] = [];
+  @Input()
+  set page(page: number) {
+    this.query.page = page || 1;
+  }
+
+  @Input()
+  get query(): LpLinkQuery  {
+    return this._query
+  };
+
+  set query(query) {
+    this._query = query || this._query;
+  }
+
   public loading = false;
-  public page = 1;
-  public total = 0;
-  
-  private _subs: Subscription[] = [];
 
+  private _query: LpLinkQuery = {}
+  
   constructor(private linkService: LinkService) { }
 
-  ngOnInit(): void {
-    this.fetchLinks();
-    this._subs.push(this.linkService.linksUpdated$.subscribe(() => { this.fetchLinks()}));
+  ngOnChanges(changes: SimpleChanges): void {
+    this.linkService.queryLinks(this.query);
   }
 
-  ngOnDestroy(): void {
-    this._subs.forEach(sub => sub.unsubscribe());
+  public get links(): LpLink[] {
+    return this.linkService.links()?.contents || [];
   }
 
-  private async fetchLinks(): Promise<void> {
-    this.loading = true;
-    const result = await this.linkService.getLinks(this.page);
-
-    this.links = result.contents;
-    this.total = result.total;
-
-    this.loading = false;
+  public get total(): number {
+    return this.linkService.links()?.total || 0;
   }
 
 }

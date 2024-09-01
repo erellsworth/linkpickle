@@ -1,9 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams, HttpParamsOptions } from '@angular/common/http';
+import { computed, Injectable, signal } from '@angular/core';
 import {  firstValueFrom, Subject } from 'rxjs';
 import { LpLink, LpLinkPreview } from '../../../api/interfaces/link';
 import { ApiResponse, PaginatedApiResponse, PaginatedResults } from '../../../api/interfaces/api';
 import { LpCategory } from '../../../api/interfaces/category';
+import { LpLinkQuery } from '../../../api/interfaces/query';
+
+interface queryCache {
+  query: string;
+  result: PaginatedResults<LpLink>
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,51 +18,25 @@ export class LinkService {
 
   public linksUpdated$ = new Subject<void>();
 
+  private currentQuery: LpLinkQuery = {};
+  private queryCache = signal<queryCache[]>([]);
+
   constructor(private http: HttpClient) { }
 
-  public async getLinks(page: number): Promise<PaginatedResults<LpLink>> {
-    try {
-      const result = await firstValueFrom(this.http.get<PaginatedApiResponse<LpLink>>(`api/links/${page}`));
-      
-      if (result.success) {
-        return result.data as PaginatedResults<LpLink>;
-      }
-
-      return {
-        contents: [],
-        total: 0,
-        page
-      };
-    } catch (e) {
-      return {
-        contents: [],
-        total: 0,
-        page
-      };
+  public links = computed(() => {
+    const results = this.queryCache().find(cache => cache.query === JSON.stringify(this.currentQuery));
+    if (results) {
+      return results.result;
     }
+    return;
+  });
+
+  public queryLinks(query: LpLinkQuery): void {
+    this.currentQuery = query;
+    this.updateCache();
   }
 
-  public async getLinksByCategoryId(id: number, page: number): Promise<PaginatedResults<LpLink>> {
-    try {
-      const result = await firstValueFrom(this.http.get<PaginatedApiResponse<LpLink>>(`api/links/category/${id}/${page}`));
-      
-      if (result.success) {
-        return result.data as PaginatedResults<LpLink>;
-      }
 
-      return {
-        contents: [],
-        total: 0,
-        page
-      };
-    } catch (e) {
-      return {
-        contents: [],
-        total: 0,
-        page
-      };
-    }
-  }
   public async getLinkPreview(url?: string): Promise<{ preview: LpLinkPreview; siteName: string; } | string> {
     const validUrl = this.getValidUrl(url);
     
@@ -107,6 +87,59 @@ export class LinkService {
       return url;
     } catch (err) {
       return false;
+    }
+  }
+
+  private httpParamsFromQuery(query: LpLinkQuery): HttpParams {
+
+    let params = new HttpParams();
+
+    Object.keys(query).forEach(key => {
+      const queryKey = key as keyof LpLinkQuery;
+      const value = query[queryKey];
+
+      if (Array.isArray(value)) {
+        value.forEach(val => {
+          params = params.append(`${key}[]`, val);
+        })
+      } else {
+        params =  params.append(key, value as string);
+      }
+    });
+
+    return params;
+  }
+
+  private async updateCache(): Promise<void> {
+    try {
+      const params = this.httpParamsFromQuery(this.currentQuery);
+      const result = await firstValueFrom(this.http.get<PaginatedApiResponse<LpLink>>(`api/links/search`, {
+        params
+      }));
+
+      
+      if (result.success) {
+        const caches: queryCache[] = [];
+
+        this.queryCache().forEach(cache => {
+          if (cache.query === JSON.stringify(this.currentQuery)) {
+            cache.result = result.data as PaginatedResults<LpLink>;
+            caches.push(cache);
+          }
+        });
+
+        if (!caches.length) {
+          caches.push({
+            query: JSON.stringify(this.currentQuery),
+            result: result.data as PaginatedResults<LpLink>
+          })
+        }
+     
+        this.queryCache.set(caches);
+      }
+
+    } catch (e) {
+    
     }
   }
 }

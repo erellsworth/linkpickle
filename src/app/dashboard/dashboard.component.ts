@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavigationComponent } from './components/navigation/navigation.component';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import {  RouterOutlet } from '@angular/router';
 import { PageComponent } from '../pickle-ui/page/page.component';
 
 @Component({
@@ -10,12 +10,6 @@ import { PageComponent } from '../pickle-ui/page/page.component';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent  {
 
-  constructor(private router: Router){}
-  ngOnInit(): void {
-    if (this.router.url === '/') {
-      this.router.navigate(['links']);
-    }
-  }
 }

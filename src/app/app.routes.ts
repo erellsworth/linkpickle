@@ -14,16 +14,16 @@ export const routes: Routes = [
         canActivateChild: [userGuard],
         children: [
             {
+                path: '',
+                component: LinksComponent
+            },
+            {
+                path: ':page',
+                component: LinksComponent
+            },
+            {
                 path: 'category/:id',
                 component: CategoryComponent
-            },
-            {
-                path: 'links',
-                component: LinksComponent
-            },
-            {
-                path: 'links/:page',
-                component: LinksComponent
             }
         ]
     },

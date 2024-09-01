@@ -7,5 +7,5 @@ export interface LpLinkQuery {
     page?: number;
     isPublic?: boolean;
     orderBy?: string;
-    order: 'DESC' | 'ASC'
+    order?: 'DESC' | 'ASC'
 }
