@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LinkService } from '../../../services/link.service';
 import { SqueezeboxComponent } from '../../../pickle-ui/squeezebox/squeezebox.component';
@@ -8,6 +8,8 @@ import { LoadingIndicatorComponent } from '../../../pickle-ui/loading-indicator/
 import { ToasterService } from '../../../services/toaster.service';
 import { CategorySelectorComponent } from './category-selector/category-selector.component';
 import { LpCategory } from '../../../../../api/interfaces/category';
+import { CategoryService } from '../../../services/category.service';
+import { LpLinkQuery } from '../../../../../api/interfaces/query';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -29,7 +31,9 @@ interface LinkForm {
   templateUrl: './link-pickler.component.html',
   styleUrl: './link-pickler.component.scss'
 })
-export class LinkPicklerComponent {
+export class LinkPicklerComponent implements OnChanges{
+
+  @Input() categories: LpCategory[] = [];
 
   @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
   @ViewChild('categorySelector') categorySelector!: CategorySelectorComponent;
@@ -50,6 +54,7 @@ export class LinkPicklerComponent {
   } | undefined;
 
   constructor(
+    private categoryService: CategoryService,
     private fb: FormBuilder,
     private linkService: LinkService,
     private toaster: ToasterService) { }
@@ -66,6 +71,14 @@ export class LinkPicklerComponent {
       } as LpLink;
      }
     return false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.updateCategories(this.categories);
+    if (this.categorySelector) {
+      this.categorySelector.selecteCategories = this.categories;  
+    }
+    
   }
 
   public updateCategories(categories: LpCategory[]): void {

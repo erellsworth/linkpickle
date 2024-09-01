@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { LpCategory } from '../../../api/interfaces/category';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../../../api/interfaces/api';
@@ -10,9 +10,18 @@ import { ApiResponse } from '../../../api/interfaces/api';
 export class CategoryService {
 
   public categories = signal<LpCategory[]>([]);
+  public currentCategory = computed(() => {
+    return this.getCategoryById(this.currentCategoryId);
+  });
+
+  public currentCategoryId!: number;
 
   constructor(private http: HttpClient) { 
     this.loadCategories();
+  }
+
+  public getCategoriesFromIds(ids: number[]): LpCategory[] {
+    return ids.map(id => this.getCategoryById(id)).filter(cat => Boolean(cat)) as LpCategory[];
   }
 
   public getCategoryById(id: number): LpCategory | undefined {

@@ -21,17 +21,18 @@ export class CategoryComponent {
   private _id!: number;
 
   @Input()
-  set id(id: number) {
-    this._id = id;
+  set id(id: string) {
+    this._id = Number(id);
     this.query = {
-      categoryIds: [id]
+      categoryIds: [this._id]
     }
+    this.catService.currentCategoryId = this._id;
   }
 
   constructor(private catService: CategoryService) { }
   
   public get category(): LpCategory | undefined {
-    return this.catService.getCategoryById(this._id);
+    return this.catService.currentCategory();
   }
 
 }

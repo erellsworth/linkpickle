@@ -5,6 +5,8 @@ import { LoadingIndicatorComponent } from '../../pickle-ui/loading-indicator/loa
 import { LinkPicklerComponent } from '../components/link-pickler/link-pickler.component';
 import { LinkCardComponent } from './link-card/link-card.component';
 import { LpLinkQuery } from '../../../../api/interfaces/query';
+import { CategoryService } from '../../services/category.service';
+import { LpCategory } from '../../../../api/interfaces/category';
 
 @Component({
   selector: 'app-links',
@@ -19,8 +21,8 @@ import { LpLinkQuery } from '../../../../api/interfaces/query';
 export class LinksComponent implements OnChanges {
 
   @Input()
-  set page(page: number) {
-    this.query.page = page || 1;
+  set page(page: string) {
+    this.query.page = page ? Number(page) : 1;
   }
 
   @Input()
@@ -36,10 +38,18 @@ export class LinksComponent implements OnChanges {
 
   private _query: LpLinkQuery = {}
   
-  constructor(private linkService: LinkService) { }
+  constructor(private categoryService: CategoryService, private linkService: LinkService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.linkService.queryLinks(this.query);
+  }
+
+  public get categories(): LpCategory[] {
+    return this.categoryService.getCategoriesFromIds(this.categoryIds);
+  }
+
+  public get categoryIds(): number[] {
+    return this.query.categoryIds || [];
   }
 
   public get links(): LpLink[] {

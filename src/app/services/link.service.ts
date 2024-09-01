@@ -16,8 +16,6 @@ interface queryCache {
 })
 export class LinkService {
 
-  public linksUpdated$ = new Subject<void>();
-
   private currentQuery: LpLinkQuery = {};
   private queryCache = signal<queryCache[]>([]);
 
@@ -66,7 +64,7 @@ export class LinkService {
       }));
 
       if (result.success) {
-        this.linksUpdated$.next();
+        this.updateCache();
         return result.data as LpLink;
       }
 
