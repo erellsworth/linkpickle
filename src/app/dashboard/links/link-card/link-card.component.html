@@ -1,25 +1,47 @@
-
 @if(link.id) {
-    <hr/>
+<hr />
 }
 
-<div class="link-card p-3" [class.preview]="!link.id">
+<div
+  class="link-card p-3 flex justify-content-between"
+  [class.preview]="!link.id"
+>
+  <div>
     <div class="flex">
-        @if(link.thumbnail) {
-        <div class="thumbnail pr-2">
-            <a [href]="link.url" target="_blank">
-                <img class="p-0" [src]="link.thumbnail"  />
-                </a>
-        </div>
+      @if(link.thumbnail) {
+      <div class="thumbnail pr-2">
+        <a [href]="link.url" target="_blank">
+          <img class="p-0" [src]="link.thumbnail" />
+        </a>
+      </div>
+      }
+      <div class="p-0">
+        <h4 class="mt-0">
+          <a [href]="link.url" target="_blank">{{ link.title }}</a>
+        </h4>
+        @if(link.description){
+        <p class="pt-0">{{ link.description }}</p>
         }
-        <div class="p-0">
-            <h4 class="mt-0">
-                <a [href]="link.url" target="_blank">{{link.title}}</a>
-            </h4>
-            @if(link.description){
-                <p class="pt-0">{{ link.description }}</p>
-            }
-        </div>
+      </div>
     </div>
-    <p><a [href]="link.url" target="_blank">{{link.url}}</a></p>
+    <div>
+      <p>
+        <a [href]="link.url" target="_blank">{{ link.url }}</a>
+      </p>
+      @if(link.Categories.length) {
+      <hr />
+      <div class="flex">
+        <h2 class="py-1 px-2"><fa-icon [icon]="icons.jar" /></h2>
+
+        <ul>
+          @for (cat of link.Categories; track $index) {
+          <li>
+            <a [routerLink]="['category', cat.id]">{{ cat.name }}</a>
+          </li>
+          }
+        </ul>
+      </div>
+      }
+    </div>
+  </div>
 </div>

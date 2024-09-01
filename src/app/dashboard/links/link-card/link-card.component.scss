@@ -1,24 +1,39 @@
 .link-card {
-    background: var(--primary-dark);
-    border-radius: .25rem;
+  background: var(--primary-dark);
+  border-radius: 0.25rem;
 
-    &.preview {
-        border: 1px dashed var(--primary-color);
+  &.preview {
+    border: 1px dashed var(--primary-color);
+  }
+
+  a {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--secondary-light);
     }
 
-    a {
-        color: var(--primary-color);
-
-        &:hover {
-            color: var(--secondary-light);
-        }
-    
-        &:visited {
-            color: var(--secondary-color);
-        }
+    &:visited {
+      color: var(--secondary-color);
     }
+  }
 
-    .thumbnail {
-        max-width: 25%;
+  .thumbnail {
+    max-width: 25%;
+  }
+
+  ul {
+    li {
+      display: inline-block;
+      margin: 0.25rem;
+
+      a {
+        color: var(--primary-color-text);
+        display: block;
+        background: var(--primary-color);
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+      }
     }
+  }
 }
