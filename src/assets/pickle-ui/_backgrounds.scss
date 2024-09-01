@@ -1,0 +1,10 @@
+.bg {
+  &-primary {
+    &-dark {
+      background: var(--primary-dark);
+    }
+    &-light {
+      background: var(--primary-light);
+    }
+  }
+}

@@ -4,9 +4,7 @@
   @if (!loading && !links.length) {
   <p>No Links found</p>
   } @else {
-  <p class="bg-primary p-2 border-round">
-    Showing {{ links.length }} of {{ total }} Links
-  </p>
+  <app-results-info />
   } @for (link of links; track $index) {
   <app-link-card [link]="link" />
   } @if (loading) {

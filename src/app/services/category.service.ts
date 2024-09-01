@@ -10,9 +10,10 @@ import { ApiResponse } from '../../../api/interfaces/api';
 export class CategoryService {
 
   public categories = signal<LpCategory[]>([]);
-  public currentCategory = computed(() => {
+
+  public get currentCategory() {
     return this.getCategoryById(this.currentCategoryId);
-  });
+  };
 
   public currentCategoryId!: number;
 

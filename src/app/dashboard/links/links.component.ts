@@ -7,6 +7,7 @@ import { LinkCardComponent } from './link-card/link-card.component';
 import { LpLinkQuery } from '../../../../api/interfaces/query';
 import { CategoryService } from '../../services/category.service';
 import { LpCategory } from '../../../../api/interfaces/category';
+import { ResultsInfoComponent } from "../components/results-info/results-info.component";
 
 @Component({
   selector: 'app-links',
@@ -14,7 +15,9 @@ import { LpCategory } from '../../../../api/interfaces/category';
   imports: [
     LinkPicklerComponent,
     LinkCardComponent,
-    LoadingIndicatorComponent],
+    LoadingIndicatorComponent,
+    ResultsInfoComponent
+],
   templateUrl: './links.component.html',
   styleUrl: './links.component.scss'
 })
@@ -41,6 +44,9 @@ export class LinksComponent implements OnChanges {
   constructor(private categoryService: CategoryService, private linkService: LinkService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!this.query.categoryIds?.length) {
+      this.categoryService.currentCategoryId = 0;
+    }
     this.linkService.queryLinks(this.query);
   }
 

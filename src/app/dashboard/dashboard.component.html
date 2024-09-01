@@ -1,8 +1,10 @@
-<app-page classes="flex">
-    <div class="w-3 pl-2 nin-h-full border-1 border-round-right">
-        <app-navigation />
-    </div>
-    <div class="w-9 p-2 min-h-full">
-        <router-outlet />
-    </div>
+<app-page classes="grid">
+  <div
+    class="md:col-3 col-12 pt-0 nin-h-full border-1 border-round-right bg-primary-dark"
+  >
+    <app-navigation />
+  </div>
+  <div class="md:col-9 col-12 p-0 min-h-full">
+    <router-outlet />
+  </div>
 </app-page>
