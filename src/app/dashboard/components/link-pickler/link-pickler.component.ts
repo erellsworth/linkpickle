@@ -1,5 +1,18 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { LinkService } from '../../../services/link.service';
 import { SqueezeboxComponent } from '../../../pickle-ui/squeezebox/squeezebox.component';
 import { LpLink, LpLinkPreview } from '../../../../../api/interfaces/link';
@@ -27,12 +40,12 @@ interface LinkForm {
     LinkCardComponent,
     LoadingIndicatorComponent,
     ReactiveFormsModule,
-    SqueezeboxComponent],
+    SqueezeboxComponent,
+  ],
   templateUrl: './link-pickler.component.html',
-  styleUrl: './link-pickler.component.scss'
+  styleUrl: './link-pickler.component.scss',
 })
-export class LinkPicklerComponent implements OnChanges{
-
+export class LinkPicklerComponent implements OnChanges {
   @Input() categories: LpCategory[] = [];
 
   @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
@@ -43,21 +56,24 @@ export class LinkPicklerComponent implements OnChanges{
     title: this.fb.nonNullable.control('', Validators.required),
     description: this.fb.nonNullable.control(''),
     categories: this.fb.nonNullable.control([] as LpCategory[]),
-    pinned: this.fb.nonNullable.control(false)
+    pinned: this.fb.nonNullable.control(false),
   });
 
   public loadingPreview = false;
 
-  private _preview: {
-    preview: LpLinkPreview;
-    siteName: string
-  } | undefined;
+  private _preview:
+    | {
+        preview: LpLinkPreview;
+        siteName: string;
+      }
+    | undefined;
 
   constructor(
     private categoryService: CategoryService,
     private fb: FormBuilder,
     private linkService: LinkService,
-    private toaster: ToasterService) { }
+    private toaster: ToasterService
+  ) {}
 
   public get linkPreview(): LpLink | false {
     if (this._preview) {
@@ -65,20 +81,19 @@ export class LinkPicklerComponent implements OnChanges{
         ...this._preview.preview,
         ...{
           Site: {
-            name: this._preview.siteName
-          }
-        }
+            name: this._preview.siteName,
+          },
+        },
       } as LpLink;
-     }
+    }
     return false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.updateCategories(this.categories);
     if (this.categorySelector) {
-      this.categorySelector.selecteCategories = this.categories;  
+      this.categorySelector.selecteCategories = this.categories;
     }
-    
   }
 
   public updateCategories(categories: LpCategory[]): void {
@@ -95,19 +110,18 @@ export class LinkPicklerComponent implements OnChanges{
       this.toaster.add({
         title: 'Error',
         message: linkPreview,
-        severity: 'error'
+        severity: 'error',
       });
       this.formGroup.reset();
     } else {
       this._preview = linkPreview;
-      this.setPreview(url as string, linkPreview.preview);   
+      this.setPreview(url as string, linkPreview.preview);
     }
 
     this.loadingPreview = false;
-
   }
 
-  public async save(): Promise<void> { 
+  public async save(): Promise<void> {
     const link = this.formGroup.value as unknown as LpLink;
     const categories = this.formGroup.value.categories;
 
@@ -117,7 +131,7 @@ export class LinkPicklerComponent implements OnChanges{
       this.toaster.add({
         title: 'Error',
         message: result,
-        severity: 'error'
+        severity: 'error',
       });
     } else {
       this.formGroup.reset();
@@ -125,7 +139,7 @@ export class LinkPicklerComponent implements OnChanges{
       this.toaster.add({
         title: 'Success',
         message: 'Link Saved',
-        severity: 'success'
+        severity: 'success',
       });
       this._preview = undefined;
     }
@@ -134,14 +148,10 @@ export class LinkPicklerComponent implements OnChanges{
   private setPreview(url: string, preview: LpLinkPreview): void {
     this.formGroup.get('url')?.setValue(url);
 
-      this.formGroup.get('title')?.setValue(preview.title || url);
-    
+    this.formGroup.get('title')?.setValue(preview.title || url);
 
     if (preview.description) {
       this.formGroup.get('description')?.setValue(preview.description);
     }
-
   }
-  
-
 }
