@@ -3,7 +3,7 @@ import { CategoryService } from '../../../services/category.service';
 import { LpCategory } from '../../../../../api/interfaces/category';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHome, faJ, faJar } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faJar, faThumbTack } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-navigation',
@@ -16,6 +16,7 @@ export class NavigationComponent {
   public icons = {
     home: faHome,
     jar: faJar,
+    pinned: faThumbTack,
   };
 
   constructor(private categoryService: CategoryService) {}

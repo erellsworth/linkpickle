@@ -1,10 +1,15 @@
-<ul>
-  <li>
+<ul class="flex flex-wrap justify-content-evenly">
+  <li class="w-6">
     <a
       [routerLink]="['/']"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       ><fa-icon class="p-2" [icon]="icons.home" />Home</a
+    >
+  </li>
+  <li class="w-6">
+    <a [routerLink]="['pinned']" routerLinkActive="active"
+      ><fa-icon class="p-2" [icon]="icons.pinned" />Pinned</a
     >
   </li>
 </ul>

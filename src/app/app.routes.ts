@@ -8,35 +8,35 @@ import { LinksComponent } from './dashboard/links/links.component';
 import { CategoryComponent } from './dashboard/category/category.component';
 
 export const routes: Routes = [
-    {
+  {
+    path: '',
+    component: DashboardComponent,
+    canActivateChild: [userGuard],
+    children: [
+      {
         path: '',
-        component: DashboardComponent,
-        canActivateChild: [userGuard],
-        children: [
-            {
-                path: '',
-                component: LinksComponent
-            },
-            {
-                path: ':page',
-                component: LinksComponent
-            },
-            {
-                path: 'category/:id',
-                component: CategoryComponent
-            }
-        ]
-    },
-    {
-        path: 'login',
-        component: LoginComponent
-    },
-    {
-        path: 'recover',
-        component: RecoverComponent
-    },
-    {
-        path: 'register',
-        component: RegisterComponent
-    }
+        component: LinksComponent,
+      },
+      {
+        path: ':page',
+        component: LinksComponent,
+      },
+      {
+        path: 'category/:id',
+        component: CategoryComponent,
+      },
+    ],
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'recover',
+    component: RecoverComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
 ];

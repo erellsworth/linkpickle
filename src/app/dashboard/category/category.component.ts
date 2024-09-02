@@ -11,10 +11,9 @@ import { LinksComponent } from '../links/links.component';
   standalone: true,
   imports: [LinksComponent],
   templateUrl: './category.component.html',
-  styleUrl: './category.component.scss'
+  styleUrl: './category.component.scss',
 })
 export class CategoryComponent {
-
   public links: LpLink[] = [];
   public query!: LpLinkQuery;
 
@@ -23,16 +22,20 @@ export class CategoryComponent {
   @Input()
   set id(id: string) {
     this._id = Number(id);
-    this.query = {
-      categoryIds: [this._id]
+    if (this._id) {
+      this.query = {
+        categoryIds: [this._id],
+      };
+      this.catService.currentCategoryId = this._id;
+    } else {
+      // TODO: support this in the API
+      this.query = { uncategorized: true };
     }
-    this.catService.currentCategoryId = this._id;
   }
 
-  constructor(private catService: CategoryService) { }
-  
+  constructor(private catService: CategoryService) {}
+
   public get category(): LpCategory | undefined {
     return this.catService.currentCategory;
   }
-
 }

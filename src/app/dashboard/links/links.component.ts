@@ -30,7 +30,11 @@ import { ResultsInfoComponent } from '../components/results-info/results-info.co
 export class LinksComponent implements OnChanges {
   @Input()
   set page(page: string) {
-    this.query.page = page ? Number(page) : 1;
+    if (page === 'pinned') {
+      this.query.pinned = true;
+    } else {
+      this.query.page = page ? Number(page) : 1;
+    }
   }
 
   @Input()
