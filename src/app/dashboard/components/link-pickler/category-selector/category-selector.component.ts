@@ -2,10 +2,9 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
+  OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 import { LpCategory } from '../../../../../../api/interfaces/category';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +12,7 @@ import { CategoryService } from '../../../../services/category.service';
 import { faPlusCircle, faRemove } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TooltipComponent } from '../../../../pickle-ui/tooltip/tooltip.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-category-selector',
@@ -21,9 +21,7 @@ import { TooltipComponent } from '../../../../pickle-ui/tooltip/tooltip.componen
   templateUrl: './category-selector.component.html',
   styleUrl: './category-selector.component.scss',
 })
-export class CategorySelectorComponent {
-  @Input() selecteCategories: LpCategory[] = [];
-
+export class CategorySelectorComponent implements OnInit, OnDestroy {
   @Output() selectionChanged = new EventEmitter<LpCategory[]>();
 
   public addIcon = faPlusCircle;
@@ -32,9 +30,26 @@ export class CategorySelectorComponent {
     add: faPlusCircle,
     remove: faRemove,
   };
+  public selecteCategories: LpCategory[] = [];
   public tooltipMessage = '';
 
+  private _subs: Subscription[] = [];
+
   constructor(private categoryService: CategoryService) {}
+
+  ngOnInit(): void {
+    this._subs.push(
+      this.categoryService.currentCategory$.subscribe((cat) => {
+        if (cat && !this.isSelected(cat)) {
+          this.selecteCategories.push(cat);
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._subs.forEach((sub) => sub.unsubscribe());
+  }
 
   public get categories() {
     return this.categoryService.categories();
@@ -96,8 +111,11 @@ export class CategorySelectorComponent {
     this.categoryService.loadCategories();
   }
 
+  private isSelected(category: LpCategory): boolean {
+    return this.selecteCategories.map((cat) => cat.id).includes(category.id);
+  }
+
   private selectByName(name: string): void {
-    console.log('selectByName');
     const category = this.categories.find(
       (cat) => cat.name.toLowerCase() === name.toLowerCase()
     );

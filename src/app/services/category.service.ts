@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { LpCategory } from '../../../api/interfaces/category';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../../../api/interfaces/api';
 
 @Injectable({
@@ -10,11 +10,20 @@ import { ApiResponse } from '../../../api/interfaces/api';
 export class CategoryService {
   public categories = signal<LpCategory[]>([]);
 
-  public get currentCategory() {
-    return this.getCategoryById(this.currentCategoryId);
+  public currentCategory$ = new BehaviorSubject<LpCategory | undefined>(
+    undefined
+  );
+
+  public get currentCategoryId(): number | undefined {
+    return this._currentCategoryId;
   }
 
-  public currentCategoryId!: number;
+  public set currentCategoryId(id: number) {
+    this._currentCategoryId = id;
+    this.refreshCurrentCategory();
+  }
+
+  private _currentCategoryId!: number;
 
   constructor(private http: HttpClient) {
     this.loadCategories();
@@ -49,9 +58,21 @@ export class CategoryService {
       );
       if (results.success) {
         this.categories.set(results.data as LpCategory[]);
+        this.refreshCurrentCategory();
       }
     } catch (e) {
       console.error('error loading categoires');
+    }
+  }
+
+  private refreshCurrentCategory() {
+    if (!this.currentCategoryId) {
+      this.currentCategory$.next(undefined);
+      return;
+    }
+    const cat = this.getCategoryById(this.currentCategoryId);
+    if (cat) {
+      this.currentCategory$.next(cat);
     }
   }
 }

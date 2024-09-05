@@ -1,6 +1,6 @@
 <div class="bg-primary p-2 border-round flex justify-content-between">
   <span>Showing {{ links.length }} of {{ total }} Links</span>
   @if (category) {
-  <span>{{ category.name }}</span>
+  <span>{{ (category | async)?.name }} </span>
   }
 </div>

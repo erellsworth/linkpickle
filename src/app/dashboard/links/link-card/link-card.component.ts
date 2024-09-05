@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { LpLink } from '../../../../../api/interfaces/link';
-import { faJar, faThumbTack } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faJar,
+  faThumbTack,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipComponent } from '../../../pickle-ui/tooltip/tooltip.component';
@@ -16,6 +21,8 @@ export class LinkCardComponent {
   @Input({ required: true }) link!: LpLink;
 
   public icons = {
+    delete: faTrash,
+    edit: faEdit,
     jar: faJar,
     pinned: faThumbTack,
   };

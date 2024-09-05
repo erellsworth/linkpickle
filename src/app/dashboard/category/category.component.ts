@@ -34,8 +34,4 @@ export class CategoryComponent {
   }
 
   constructor(private catService: CategoryService) {}
-
-  public get category(): LpCategory | undefined {
-    return this.catService.currentCategory;
-  }
 }

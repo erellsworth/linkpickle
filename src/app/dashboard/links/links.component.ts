@@ -46,7 +46,6 @@ export class LinksComponent implements OnChanges {
     this._query = query || this._query;
   }
 
-  public categories: LpCategory[] = [];
   public loading = false;
 
   private _query: LpLinkQuery = {};
@@ -57,13 +56,11 @@ export class LinksComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!this.query.categoryIds?.length) {
+    if (!this.categoryIds.length) {
       this.categoryService.currentCategoryId = 0;
     }
+
     this.linkService.queryLinks(this.query);
-    this.categories = this.categoryService.getCategoriesFromIds(
-      this.categoryIds
-    );
   }
 
   public get categoryIds(): number[] {

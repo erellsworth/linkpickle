@@ -44,11 +44,20 @@
       }
     </div>
   </div>
-  @if (link.pinned) {
-  <app-tooltip message="pinned link" [showOnHover]="true" position="top-left">
+  <div>
+    @if (link.pinned) {
+    <app-tooltip message="pinned link" [showOnHover]="true" position="top-left">
+      <div class="p-2">
+        <fa-icon [icon]="icons.pinned" />
+      </div>
+    </app-tooltip>
+    } @if(link.id){
     <div class="p-2">
-      <fa-icon [icon]="icons.pinned" />
+      <fa-icon [icon]="icons.edit" />
     </div>
-  </app-tooltip>
-  }
+    <div class="p-2">
+      <fa-icon [icon]="icons.delete" />
+    </div>
+    }
+  </div>
 </div>

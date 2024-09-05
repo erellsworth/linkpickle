@@ -45,8 +45,8 @@ interface LinkForm {
   templateUrl: './link-pickler.component.html',
   styleUrl: './link-pickler.component.scss',
 })
-export class LinkPicklerComponent implements OnChanges {
-  @Input() categories: LpCategory[] = [];
+export class LinkPicklerComponent {
+  @Input() link!: LpLink;
 
   @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
   @ViewChild('categorySelector') categorySelector!: CategorySelectorComponent;
@@ -87,13 +87,6 @@ export class LinkPicklerComponent implements OnChanges {
       } as LpLink;
     }
     return false;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.updateCategories(this.categories);
-    if (this.categorySelector) {
-      this.categorySelector.selecteCategories = this.categories;
-    }
   }
 
   public updateCategories(categories: LpCategory[]): void {
