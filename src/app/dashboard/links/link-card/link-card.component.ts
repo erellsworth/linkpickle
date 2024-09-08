@@ -9,11 +9,20 @@ import {
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipComponent } from '../../../pickle-ui/tooltip/tooltip.component';
+import { ModalService } from '../../../services/modal.service';
+import { LinkSearchComponent } from '../../components/link-search/link-search.component';
+import { LinkPicklerComponent } from '../../components/link-pickler/link-pickler.component';
 
 @Component({
   selector: 'app-link-card',
   standalone: true,
-  imports: [FontAwesomeModule, TooltipComponent, RouterLink, RouterLinkActive],
+  imports: [
+    FontAwesomeModule,
+    LinkPicklerComponent,
+    TooltipComponent,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './link-card.component.html',
   styleUrl: './link-card.component.scss',
 })
@@ -26,4 +35,16 @@ export class LinkCardComponent {
     jar: faJar,
     pinned: faThumbTack,
   };
+
+  constructor(private modalService: ModalService) {}
+
+  public showEditor(): void {
+    this.modalService.show({
+      componant: LinkPicklerComponent,
+      width: '75vw',
+      inputs: {
+        link: this.link,
+      },
+    });
+  }
 }

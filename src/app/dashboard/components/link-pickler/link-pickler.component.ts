@@ -1,11 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, effect, Input, OnInit, viewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -23,11 +16,12 @@ import { CategorySelectorComponent } from './category-selector/category-selector
 import { LpCategory } from '../../../../../api/interfaces/category';
 import { CategoryService } from '../../../services/category.service';
 import { LpLinkQuery } from '../../../../../api/interfaces/query';
+import { JsonPipe } from '@angular/common';
 
 interface LinkForm {
   url: FormControl<string>;
   title: FormControl<string>;
-  description: FormControl<string>;
+  description: FormControl<string | undefined>;
   categories: FormControl<LpCategory[]>;
   pinned: FormControl<boolean>;
 }
@@ -36,6 +30,7 @@ interface LinkForm {
   selector: 'app-link-pickler',
   standalone: true,
   imports: [
+    JsonPipe,
     CategorySelectorComponent,
     LinkCardComponent,
     LoadingIndicatorComponent,
@@ -45,19 +40,14 @@ interface LinkForm {
   templateUrl: './link-pickler.component.html',
   styleUrl: './link-pickler.component.scss',
 })
-export class LinkPicklerComponent {
+export class LinkPicklerComponent implements OnInit {
   @Input() link!: LpLink;
 
-  @ViewChild('squeezebox') squeezebox!: SqueezeboxComponent;
-  @ViewChild('categorySelector') categorySelector!: CategorySelectorComponent;
+  public squeezebox = viewChild<SqueezeboxComponent>('squeezebox');
+  public categorySelector =
+    viewChild<CategorySelectorComponent>('categorySelector');
 
-  public formGroup: FormGroup<LinkForm> = this.fb.group({
-    url: this.fb.nonNullable.control('', Validators.required),
-    title: this.fb.nonNullable.control('', Validators.required),
-    description: this.fb.nonNullable.control(''),
-    categories: this.fb.nonNullable.control([] as LpCategory[]),
-    pinned: this.fb.nonNullable.control(false),
-  });
+  public formGroup!: FormGroup<LinkForm>;
 
   public loadingPreview = false;
 
@@ -69,11 +59,24 @@ export class LinkPicklerComponent {
     | undefined;
 
   constructor(
-    private categoryService: CategoryService,
     private fb: FormBuilder,
     private linkService: LinkService,
     private toaster: ToasterService
-  ) {}
+  ) {
+    effect(() => {
+      if (this.link) {
+        this.squeezebox()?.toggle(false);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.buildFormGroup();
+  }
+
+  public get buttonLabel(): string {
+    return Boolean(this.link?.id) ? 'Re-pickle it!' : 'Pickle it!';
+  }
 
   public get linkPreview(): LpLink | false {
     if (this._preview) {
@@ -128,7 +131,7 @@ export class LinkPicklerComponent {
       });
     } else {
       this.formGroup.reset();
-      this.categorySelector.reset();
+      this.categorySelector()?.reset();
       this.toaster.add({
         title: 'Success',
         message: 'Link Saved',
@@ -136,6 +139,28 @@ export class LinkPicklerComponent {
       });
       this._preview = undefined;
     }
+  }
+
+  private buildFormGroup(): void {
+    this.formGroup = this.fb.group({
+      url: this.fb.nonNullable.control(
+        this.link ? this.link.url : '',
+        Validators.required
+      ),
+      title: this.fb.nonNullable.control(
+        this.link ? this.link.title : '',
+        Validators.required
+      ),
+      description: this.fb.nonNullable.control(
+        this.link ? this.link.description : ''
+      ),
+      categories: this.fb.nonNullable.control(
+        this.link && this.link.Categories
+          ? this.link.Categories
+          : ([] as LpCategory[])
+      ),
+      pinned: this.fb.nonNullable.control(this.link ? this.link.pinned : false),
+    });
   }
 
   private setPreview(url: string, preview: LpLinkPreview): void {

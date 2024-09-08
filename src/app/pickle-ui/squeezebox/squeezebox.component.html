@@ -1,12 +1,12 @@
 <div [class.collapsed]="collapsed" class="squeezebox">
-    <div class="relative header">
-        <span class="absolute top-0 right-0 p-2 pr-3" (click)="collapsed = !collapsed">
-            <fa-icon [icon]="icon" />
-        </span>
-        <ng-content select="header"></ng-content>
-    </div>
-    <hr />
-    <div class="content">
-        <ng-content select="content"></ng-content>
-    </div>
+  <div class="relative header">
+    <span class="absolute top-0 right-0 p-2 pr-3" (click)="toggle()">
+      <fa-icon [icon]="icon" />
+    </span>
+    <ng-content select="header"></ng-content>
+  </div>
+  <hr />
+  <div class="content">
+    <ng-content select="content"></ng-content>
+  </div>
 </div>

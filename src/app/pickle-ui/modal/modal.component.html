@@ -1,5 +1,10 @@
 @if(component){
-<div class="pickle-modal">
-  <ng-container *ngComponentOutlet="component"></ng-container>
+<div
+  class="pickle-modal bg-primary flex justify-content-evenly"
+  [style]="styles"
+>
+  <div class="bg-primary-reverse pickle-modal-content">
+    <ng-container *ngComponentOutlet="component; inputs: inputs"></ng-container>
+  </div>
 </div>
 }

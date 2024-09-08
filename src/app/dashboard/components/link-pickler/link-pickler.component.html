@@ -1,4 +1,5 @@
-<form [formGroup]="formGroup" class="text-center w-11 pt-3">
+@if(formGroup){
+<form [formGroup]="formGroup" class="text-center pt-3">
   <app-squeezebox #squeezebox>
     <header>
       <div class="field grid col-12 align-items-center">
@@ -21,8 +22,13 @@
         @if(squeezebox.collapsed){ @if(loadingPreview) {
         <app-loading-indicator size="sm" />
         }
-        <button type="button" (click)="save()" [disabled]="formGroup.invalid">
-          Pickle it!
+        <button
+          type="button"
+          class="m-0"
+          (click)="save()"
+          [disabled]="formGroup.invalid"
+        >
+          {{ buttonLabel }}
         </button>
         }
       </div>
@@ -73,14 +79,13 @@
         </div>
 
         <button type="button" (click)="save()" [disabled]="formGroup.invalid">
-          Pickle it!
+          {{ buttonLabel }}
         </button>
       </div>
     </content>
   </app-squeezebox>
 </form>
-
-@if (linkPreview) {
+} @if (linkPreview) {
 <div class="w-11 mx-auto my-2">
   <app-link-card [link]="linkPreview"></app-link-card>
 </div>
