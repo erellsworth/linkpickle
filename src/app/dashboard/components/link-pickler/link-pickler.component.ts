@@ -17,6 +17,7 @@ import { LpCategory } from '../../../../../api/interfaces/category';
 import { CategoryService } from '../../../services/category.service';
 import { LpLinkQuery } from '../../../../../api/interfaces/query';
 import { JsonPipe } from '@angular/common';
+import { ModalService } from '../../../services/modal.service';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -61,6 +62,7 @@ export class LinkPicklerComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private linkService: LinkService,
+    private modalService: ModalService,
     private toaster: ToasterService
   ) {
     effect(() => {
@@ -118,10 +120,20 @@ export class LinkPicklerComponent implements OnInit {
   }
 
   public async save(): Promise<void> {
-    const link = this.formGroup.value as unknown as LpLink;
+    let link = this.formGroup.value as unknown as LpLink;
+    let message: string;
     const categories = this.formGroup.value.categories;
 
-    const result = await this.linkService.saveLink(link, categories);
+    let result: string | LpLink;
+
+    if (this.link) {
+      message = 'Link Updated';
+      link = { ...this.link, ...link };
+      result = await this.linkService.updateLink(link, categories);
+    } else {
+      message = 'Link Created';
+      result = await this.linkService.createLink(link, categories);
+    }
 
     if (typeof result === 'string') {
       this.toaster.add({
@@ -134,9 +146,10 @@ export class LinkPicklerComponent implements OnInit {
       this.categorySelector()?.reset();
       this.toaster.add({
         title: 'Success',
-        message: 'Link Saved',
+        message,
         severity: 'success',
       });
+      this.modalService.close();
       this._preview = undefined;
     }
   }

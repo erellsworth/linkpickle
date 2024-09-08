@@ -76,6 +76,15 @@ const Link = {
       },
     });
   },
+  findDuplicate: async (UserId: number, url: string, id: number) => {
+    return LinkModel.findOne({
+      where: {
+        UserId,
+        url,
+        id: { [Op.ne]: id },
+      },
+    });
+  },
   findByUserId: async (
     UserId: number,
     page: number,

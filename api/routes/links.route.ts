@@ -8,6 +8,7 @@ import { LpUser } from '../interfaces/user';
 import { LpLink, LpLinkPreview } from '../interfaces/link';
 import { LpCategory } from '../interfaces/category';
 import { LpLinkQuery } from '../interfaces/query';
+import { Op } from 'sequelize';
 
 linksRouter.get(
   '/links/search',
@@ -194,6 +195,98 @@ linksRouter.post(
       newLink.addCategories(categoryIds);
 
       successResponse(res, newLink);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  }
+);
+
+linksRouter.put(
+  '/links',
+  isAuthenticated,
+  async (
+    req: Request<{}, { link: LpLink; categories: LpCategory[] }>,
+    res: Response
+  ) => {
+    if (!req.body.link || !req.body.link.url || !req.body.link.id) {
+      return errorResponse(res, 'Missing required link data', 400);
+    }
+
+    try {
+      const url = new URL(req.body.link.url);
+      const user = req.user as LpUser;
+
+      const linkRecord = await Link.model.findByPk(req.body.link.id);
+
+      if (!linkRecord) {
+        return errorResponse(res, 'Link not found', 404);
+      }
+
+      // prevent user from creating duplicate when updating url
+      if (linkRecord.url !== req.body.link.url) {
+        const duplicateLink = await Link.findDuplicate(
+          user.id,
+          url.toString(),
+          req.body.link.id
+        );
+        if (duplicateLink) {
+          return errorResponse(
+            res,
+            'Another link already exists with this url',
+            404
+          );
+        }
+      }
+
+      const metadata = await urlMetadata(url.toString());
+
+      const site = await Site.getFromDomain(
+        url.hostname.replace(/^[^.]+\./g, ''),
+        metadata
+      );
+
+      const link = {
+        ...req.body.link,
+        ...{
+          UserId: user.id,
+          SiteId: site.id,
+        },
+      };
+
+      link.description =
+        link.description || metadata.description || metadata['og:description'];
+      link.title = link.title || metadata.title || metadata['og:title'];
+
+      const img = metadata.image || metadata['og:image'];
+
+      if (img) {
+        link.thumbnail = img;
+      }
+
+      const newCategories = req.body.categories.filter(
+        (cat: LpCategory) => !Boolean(cat.id)
+      );
+
+      const newCatIds: number[] = [];
+
+      for (const cat of newCategories) {
+        const newCat = await Category.model.create(cat);
+        newCatIds.push(newCat.id);
+      }
+
+      const categoryIds: number[] = req.body.categories
+        .filter((cat: LpCategory) => Boolean(cat.id))
+        .map((cat: LpCategory) => cat.id)
+        .concat(newCatIds);
+
+      linkRecord.set(link);
+
+      await linkRecord.save();
+
+      // @ts-ignore
+      linkRecord.addCategories(categoryIds);
+
+      successResponse(res, linkRecord);
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }

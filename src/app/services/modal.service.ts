@@ -12,4 +12,8 @@ export class ModalService {
   public show<T = any>(options: PickleModal<T>): void {
     this.modal.set(options);
   }
+
+  public close(): void {
+    this.modal.set({} as PickleModal);
+  }
 }
