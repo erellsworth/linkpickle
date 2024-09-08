@@ -3,15 +3,24 @@ import { Component } from '@angular/core';
 import { ModalService } from '../../services/modal.service';
 import { LinkSearchComponent } from '../../dashboard/components/link-search/link-search.component';
 import { PickleModalStyles } from '../../interfaces/modal.interface';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgComponentOutlet, LinkSearchComponent, JsonPipe],
+  imports: [
+    FontAwesomeModule,
+    JsonPipe,
+    LinkSearchComponent,
+    NgComponentOutlet,
+  ],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
 })
 export class ModalComponent {
+  public closeIcon = faClose;
+
   constructor(private modalService: ModalService) {}
 
   public get component() {
@@ -33,5 +42,9 @@ export class ModalComponent {
       styles.width = width;
     }
     return styles;
+  }
+
+  public close(): void {
+    this.modalService.close();
   }
 }

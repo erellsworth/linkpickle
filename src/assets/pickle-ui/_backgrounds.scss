@@ -7,4 +7,15 @@
       background: var(--primary-light);
     }
   }
+
+  &-secondary {
+    background: var(--secondary-color);
+
+    &-dark {
+      background: var(--secondary-dark);
+    }
+    &-light {
+      background: var(--secondary-light);
+    }
+  }
 }
