@@ -200,7 +200,7 @@ const Link = {
       [query.orderBy || 'createdAt', query.order || 'DESC'],
     ];
 
-    const include: Includeable[] = [Comment.model, Site.model, User.model];
+    const include: Includeable[] = [Comment.model, Site.model];
 
     if (query.categoryIds) {
       include.push({
@@ -224,8 +224,18 @@ const Link = {
 
     const { count, rows } = await LinkModel.findAndCountAll(options);
 
+    // This is ugly but it's an ongoing problem in sequelize: https://github.com/sequelize/sequelize/issues/8754
+    const contents = await Promise.all(
+      rows.map(async (row) => {
+        const content = row.toJSON();
+        // @ts-ignore
+        content.Categories = await row.getCategories();
+        return content;
+      })
+    );
+
     return {
-      contents: rows,
+      contents,
       total: count,
       page,
     };

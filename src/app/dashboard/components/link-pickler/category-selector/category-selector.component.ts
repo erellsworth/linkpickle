@@ -22,7 +22,8 @@ import { Subscription } from 'rxjs';
   styleUrl: './category-selector.component.scss',
 })
 export class CategorySelectorComponent implements OnInit, OnDestroy {
-  @Output() selectionChanged = new EventEmitter<LpCategory[]>();
+  @Output()
+  selectionChanged = new EventEmitter<LpCategory[]>();
 
   public addIcon = faPlusCircle;
   public category = '';
@@ -30,7 +31,7 @@ export class CategorySelectorComponent implements OnInit, OnDestroy {
     add: faPlusCircle,
     remove: faRemove,
   };
-  public selecteCategories: LpCategory[] = [];
+  @Input() selectedCategories: LpCategory[] = [];
   public tooltipMessage = '';
 
   private _subs: Subscription[] = [];
@@ -38,10 +39,14 @@ export class CategorySelectorComponent implements OnInit, OnDestroy {
   constructor(private categoryService: CategoryService) {}
 
   ngOnInit(): void {
+    if (this.selectedCategories.length) {
+      console.log('add');
+    }
+
     this._subs.push(
       this.categoryService.currentCategory$.subscribe((cat) => {
         if (cat && !this.isSelected(cat)) {
-          this.selecteCategories.push(cat);
+          this.selectedCategories.push(cat);
         }
       })
     );
@@ -68,7 +73,7 @@ export class CategorySelectorComponent implements OnInit, OnDestroy {
         cat.name.toLowerCase().includes(this.category.toLowerCase())
       )
       .filter((cat) => {
-        return !this.selecteCategories
+        return !this.selectedCategories
           .map((cat) => cat.name.toLowerCase())
           .includes(cat.name.toLowerCase());
       });
@@ -85,34 +90,34 @@ export class CategorySelectorComponent implements OnInit, OnDestroy {
     }
 
     const newCat = this.categoryService.getTempCategory(this.category);
-    this.selecteCategories.push(newCat);
-    this.selectionChanged.emit(this.selecteCategories);
+    this.selectedCategories.push(newCat);
+    this.selectionChanged.emit(this.selectedCategories);
     this.category = '';
   }
 
   public handelSelection(category: LpCategory): void {
-    this.selecteCategories.push(category);
-    this.selectionChanged.emit(this.selecteCategories);
+    this.selectedCategories.push(category);
+    this.selectionChanged.emit(this.selectedCategories);
     this.category = '';
     this.tooltipMessage = '';
   }
 
   public unselectCategory(category: LpCategory): void {
-    this.selecteCategories = this.selecteCategories.filter(
+    this.selectedCategories = this.selectedCategories.filter(
       (cat) => cat.name !== category.name
     );
-    this.selectionChanged.emit(this.selecteCategories);
+    this.selectionChanged.emit(this.selectedCategories);
   }
 
   public reset(): void {
-    this.selecteCategories = [];
+    this.selectedCategories = [];
     this.category = '';
     this.tooltipMessage = '';
     this.categoryService.loadCategories();
   }
 
   private isSelected(category: LpCategory): boolean {
-    return this.selecteCategories.map((cat) => cat.id).includes(category.id);
+    return this.selectedCategories.map((cat) => cat.id).includes(category.id);
   }
 
   private selectByName(name: string): void {
@@ -121,7 +126,7 @@ export class CategorySelectorComponent implements OnInit, OnDestroy {
     );
 
     if (
-      this.selecteCategories
+      this.selectedCategories
         .map((cat) => cat.name.toLowerCase())
         .includes(name.toLowerCase())
     ) {

@@ -52,6 +52,7 @@
           <app-category-selector
             #categorySelector
             (selectionChanged)="updateCategories($event)"
+            [selectedCategories]="link ? link.Categories || [] : []"
           />
         </div>
 

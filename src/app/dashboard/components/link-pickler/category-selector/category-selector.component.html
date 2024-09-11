@@ -34,7 +34,7 @@
   </div>
 
   <ul class="category-list">
-    @for (cat of selecteCategories; track $index) {
+    @for (cat of selectedCategories; track $index) {
     <app-tooltip
       message="Will create on save"
       [showOnHover]="!cat.id"
