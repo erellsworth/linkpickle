@@ -97,6 +97,29 @@ export class LinkService {
     }
   }
 
+  public async deleteLink(linkId: number): Promise<ApiResponse<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.http.delete<ApiResponse<boolean>>(`api/link/${linkId}`)
+      );
+
+      if (result.success) {
+        this.updateCache();
+        return result;
+      } else {
+        return {
+          success: false,
+          error: result.error,
+        };
+      }
+    } catch (e) {
+      return {
+        success: false,
+        error: e as Error,
+      };
+    }
+  }
+
   public async updateLink(
     link: LpLink,
     categories: LpCategory[] = []

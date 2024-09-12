@@ -1,0 +1,12 @@
+<div class="bg-primary-reverse p-2">
+  <h3>{{ message }}</h3>
+
+  <div class="flex justify-content-end">
+    <button type="button" class="bg-warning" (click)="onCancel()">
+      {{ cancelText }}
+    </button>
+    <button type="button" class="bg-success" (click)="onConfirm()">
+      {{ confirmText }}
+    </button>
+  </div>
+</div>

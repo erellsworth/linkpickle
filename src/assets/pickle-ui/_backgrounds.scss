@@ -18,4 +18,22 @@
       background: var(--secondary-light);
     }
   }
+
+  &-error {
+    background: var(--severity-error);
+  }
+
+  &-info {
+    background: var(--severity-info);
+  }
+
+  &-success {
+    background: var(--severity-success);
+    color: var(--primary-color-text);
+  }
+
+  &-warning {
+    background: var(--severity-warning);
+    color: var(--primary-color-text);
+  }
 }

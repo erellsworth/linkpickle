@@ -12,6 +12,8 @@ import { TooltipComponent } from '../../../pickle-ui/tooltip/tooltip.component';
 import { ModalService } from '../../../services/modal.service';
 import { LinkSearchComponent } from '../../components/link-search/link-search.component';
 import { LinkPicklerComponent } from '../../components/link-pickler/link-pickler.component';
+import { LinkService } from '../../../services/link.service';
+import { ToasterService } from '../../../services/toaster.service';
 
 @Component({
   selector: 'app-link-card',
@@ -36,15 +38,46 @@ export class LinkCardComponent {
     pinned: faThumbTack,
   };
 
-  constructor(private modalService: ModalService) {}
+  constructor(
+    private linkService: LinkService,
+    private modalService: ModalService,
+    private toasterService: ToasterService
+  ) {}
 
   public showEditor(): void {
     this.modalService.show({
       componant: LinkPicklerComponent,
-      width: '75vw',
       inputs: {
         link: this.link,
       },
     });
+  }
+
+  public confirmDelete(): void {
+    this.modalService.confirm({
+      message: 'Delete this link?',
+      onConfirm: () => {
+        this.modalService.close();
+        this.delete();
+      },
+    });
+  }
+
+  private async delete(): Promise<void> {
+    const result = await this.linkService.deleteLink(this.link.id);
+
+    if (result.success) {
+      this.toasterService.add({
+        severity: 'success',
+        title: 'Success!',
+        message: 'Link deleted',
+      });
+    } else {
+      this.toasterService.add({
+        severity: 'error',
+        title: 'Error!',
+        message: result.error?.message || 'Something broke',
+      });
+    }
   }
 }

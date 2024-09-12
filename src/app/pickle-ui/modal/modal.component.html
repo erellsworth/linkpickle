@@ -1,11 +1,11 @@
 @if(component){
 <div
-  class="pickle-modal bg-primary flex justify-content-evenly"
+  class="pickle-modal bg-primary flex justify-content-evenly border-round"
   [style]="styles"
 >
   <fa-icon
     (click)="close()"
-    class="absolute top-0 right-0 p-2 cursor-pointer bg-secondary border-round"
+    class="pickle-modal-close absolute cursor-pointer"
     [icon]="closeIcon"
   />
 
@@ -13,4 +13,5 @@
     <ng-container *ngComponentOutlet="component; inputs: inputs"></ng-container>
   </div>
 </div>
+<div class="pickle-modal-overlay" (click)="close()"></div>
 }

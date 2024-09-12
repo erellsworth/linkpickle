@@ -3,11 +3,30 @@
     position: fixed;
     top: 50%;
     left: 50%;
+    width: 60vw;
     transform: translate(-50%, -50%);
     z-index: 9998;
 
     &-content {
-      width: 98%;
+      width: 100%;
+    }
+
+    &-close {
+      color: var(--secondary-light);
+      font-size: 1.75rem;
+      z-index: 20;
+      right: -0.5rem;
+      top: -0.75rem;
+    }
+
+    &-overlay {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--overlay-background);
+      z-index: 100;
     }
   }
 }

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { ModalService } from '../../services/modal.service';
 import { LinkSearchComponent } from '../../dashboard/components/link-search/link-search.component';
 import { PickleModalStyles } from '../../interfaces/modal.interface';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
@@ -19,7 +19,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   styleUrl: './modal.component.scss',
 })
 export class ModalComponent {
-  public closeIcon = faClose;
+  public closeIcon = faCircleXmark;
 
   constructor(private modalService: ModalService) {}
 

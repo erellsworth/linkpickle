@@ -8,4 +8,5 @@ export interface PickleModalStyles {
 export interface PickleModal<T = any> extends PickleModalStyles {
   componant: Type<any>;
   inputs?: T;
+  onClose?: () => void;
 }

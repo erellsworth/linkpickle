@@ -1,18 +1,20 @@
 :root {
-    --primary-color: #549431;
-    --primary-color-text: #1c2127;
-    --primary-dark: hsl(from var(--primary-color-text) h s 20);
-    --primary-light: hsl(from var(--primary-color) h s 80);
-    --primary-hover: hsl(from var(--primary-color) h s 50);
-    --secondary-color: #dee75b;
-    --secondary-dark: hsl(from var(--secondary-color) h s 20);
-    --secondary-light: hsl(from var(--secondary-color) h s 80);
-    --secondary-hover: hsl(from var(--secondary-color) h s 50);
+  --primary-color: #549431;
+  --primary-color-text: #1c2127;
+  --primary-dark: hsl(from var(--primary-color-text) h s 20);
+  --primary-light: hsl(from var(--primary-color) h s 80);
+  --primary-hover: hsl(from var(--primary-color) h s 50);
+  --secondary-color: #dee75b;
+  --secondary-dark: hsl(from var(--secondary-color) h s 20);
+  --secondary-light: hsl(from var(--secondary-color) h s 80);
+  --secondary-hover: hsl(from var(--secondary-color) h s 50);
 
-    --severity-success: var(--primary-color);
-    --severity-info: var(--primary-light);
-    --severity-error: #ad3802;
-    --severity-warning: var(--secondary-color);
+  --severity-success: var(--primary-color);
+  --severity-info: var(--primary-light);
+  --severity-error: #ad3802;
+  --severity-warning: var(--secondary-color);
+
+  --overlay-background: rgba(0, 0, 0, 0.5);
 }
 
-@import './assets/pickle-ui/pickle-ui.scss';
+@import "./assets/pickle-ui/pickle-ui.scss";

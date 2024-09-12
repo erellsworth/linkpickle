@@ -112,21 +112,6 @@ linksRouter.get(
   }
 );
 
-linksRouter.get(
-  '/link/:id',
-  isAuthenticated,
-  async (req: Request<{ id: number }>, res: Response) => {
-    try {
-      const links = await Link.model.findByPk(req.params.id, {
-        include: [Category.model, Comment.model, Site.model, User.model],
-      });
-      successResponse(res, links);
-    } catch (e) {
-      errorResponse(res, (e as Error).message);
-    }
-  }
-);
-
 linksRouter.post(
   '/links',
   isAuthenticated,
@@ -287,6 +272,34 @@ linksRouter.put(
       linkRecord.addCategories(categoryIds);
 
       successResponse(res, linkRecord);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  }
+);
+
+linksRouter.delete(
+  '/link/:id',
+  isAuthenticated,
+  async (req: Request<{ id: number }>, res: Response) => {
+    try {
+      const user = req.user as LpUser;
+
+      const link = await Link.model.findOne({
+        where: {
+          id: req.params.id,
+          UserId: user.id,
+        },
+      });
+
+      if (link) {
+        // @ts-ignore
+        await link.setCategories([]);
+        await link.destroy();
+        successResponse(res, true);
+      } else {
+        errorResponse(res, 'Link not found', 400);
+      }
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
