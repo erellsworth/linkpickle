@@ -13,6 +13,7 @@ import { LpLinkQuery } from '../../../../api/interfaces/query';
 import { CategoryService } from '../../services/category.service';
 import { ResultsInfoComponent } from '../components/results-info/results-info.component';
 import { LinkSearchComponent } from '../components/link-search/link-search.component';
+import { PaginationComponent } from '../../pickle-ui/pagination/pagination.component';
 
 @Component({
   selector: 'app-links',
@@ -21,6 +22,7 @@ import { LinkSearchComponent } from '../components/link-search/link-search.compo
     LinkPicklerComponent,
     LinkCardComponent,
     LinkSearchComponent,
+    PaginationComponent,
     ResultsInfoComponent,
   ],
   templateUrl: './links.component.html',
@@ -29,6 +31,7 @@ import { LinkSearchComponent } from '../components/link-search/link-search.compo
 export class LinksComponent implements OnChanges {
   @Input()
   set page(page: string) {
+    console.log('set page', page);
     if (page === 'pinned') {
       this.query.pinned = true;
     } else {
@@ -72,5 +75,10 @@ export class LinksComponent implements OnChanges {
 
   public get total(): number {
     return this.linkService.links()?.total || 0;
+  }
+
+  public changePage(page: number): void {
+    this.page = page.toString();
+    this.linkService.queryLinks(this.query);
   }
 }

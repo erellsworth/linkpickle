@@ -13,4 +13,6 @@
   @for (link of links; track $index) {
   <app-link-card [link]="link" />
   }
+
+  <app-pagination [totalResults]="total" (pageChanged)="changePage($event)" />
 </div>

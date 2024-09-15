@@ -1,0 +1,11 @@
+<ul>
+  @for (page of pages; track $index) {
+  <li
+    class="inline-block p-2 m-2 border-round cursor-pointer"
+    [class.active]="page === currentPage"
+    (click)="selectPage(page)"
+  >
+    {{ page }}
+  </li>
+  }
+</ul>

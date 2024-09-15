@@ -1,0 +1,8 @@
+li {
+  background: var(--secondary-color);
+  color: var(--primary-color-text);
+
+  &.active {
+    background: var(--primary-color);
+  }
+}
