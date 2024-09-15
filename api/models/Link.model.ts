@@ -7,6 +7,7 @@ import {
   Order,
   WhereOptions,
 } from 'sequelize';
+import OpTypes from 'sequelize/types/operators';
 import { db } from '../utils/db';
 import { LpLink, LpLinkInstance } from '../interfaces/link';
 import { PaginatedResults } from '../interfaces/api';
@@ -169,32 +170,67 @@ const Link = {
   ): Promise<PaginatedResults<LpLink>> => {
     const limit = query.limit || 10;
     const page = query.page || 1;
-    const isPublic = query.isPublic === undefined ? 1 : query.isPublic;
+    const isPublic = typeof query.isPublic === 'undefined' ? 1 : query.isPublic;
+    const pinned = typeof query.pinned === 'undefined' ? 0 : query.pinned;
 
-    const where: WhereOptions = {
-      [Op.or]: [{ UserId }, { isPublic: 1 }],
-      isPublic,
-    };
+    const and: WhereOptions[] = [
+      { [Op.or]: [{ UserId }, { isPublic: 1 }] },
+      { pinned },
+      { isPublic },
+    ];
 
-    if (query.pinned) {
-      where.pinned = true;
+    if (query.title && !query.searchTerm) {
+      and.push({ title: { [Op.substring]: query.title } });
     }
 
-    if (query.title) {
-      where.title = { [Op.substring]: query.title };
+    if (query.url && !query.searchTerm) {
+      and.push({ url: { [Op.substring]: query.url } });
     }
 
     if (query.siteId) {
-      where.SiteId = query.siteId;
+      and.push({ SiteId: query.siteId });
+    }
+
+    let searchTerm: {
+      [OpTypes.substring]: string;
+    } | null = null;
+
+    if (query.searchTerm) {
+      searchTerm = { [Op.substring]: query.searchTerm };
+      and.push({
+        [Op.or]: [
+          {
+            title: searchTerm,
+          },
+          {
+            url: searchTerm,
+          },
+          {
+            description: searchTerm,
+          },
+        ],
+      });
     }
 
     if (query.keywords) {
-      where.description = {
-        [Op.or]: query.keywords.map((keyword) => {
-          return { [Op.substring]: keyword };
-        }),
-      };
+      const keyWordSearch = query.keywords.map((keyword) => {
+        return { [Op.substring]: keyword };
+      });
+
+      if (searchTerm) {
+        keyWordSearch.push(searchTerm);
+      }
+
+      and.push({
+        description: {
+          [Op.or]: keyWordSearch,
+        },
+      });
     }
+
+    const where: WhereOptions = {
+      [Op.and]: and,
+    };
 
     const order: Order = [
       [query.orderBy || 'createdAt', query.order || 'DESC'],

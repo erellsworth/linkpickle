@@ -4,12 +4,13 @@ import { LpLink } from '../../../../../api/interfaces/link';
 import { CategoryService } from '../../../services/category.service';
 import { LpCategory } from '../../../../../api/interfaces/category';
 import { Observable } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { LoadingIndicatorComponent } from '../../../pickle-ui/loading-indicator/loading-indicator.component';
 
 @Component({
   selector: 'app-results-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, LoadingIndicatorComponent],
   templateUrl: './results-info.component.html',
   styleUrl: './results-info.component.scss',
 })
@@ -25,6 +26,10 @@ export class ResultsInfoComponent {
 
   public get category(): Observable<LpCategory | undefined> {
     return this.categoryService.currentCategory$;
+  }
+
+  public get loading(): boolean {
+    return this.linkService.loading();
   }
 
   public get links(): LpLink[] {

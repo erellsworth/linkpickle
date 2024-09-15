@@ -3,6 +3,8 @@ export interface LpLinkQuery {
   uncategorized?: boolean;
   siteId?: number[];
   title?: string;
+  searchTerm?: string;
+  url?: string;
   keywords?: string[];
   limit?: number;
   page?: number;

@@ -8,12 +8,10 @@ import { faLink, faMoon, faOtter } from '@fortawesome/free-solid-svg-icons';
   standalone: true,
   imports: [FontAwesomeModule],
   templateUrl: './loading-indicator.component.html',
-  styleUrl: './loading-indicator.component.scss'
+  styleUrl: './loading-indicator.component.scss',
 })
 export class LoadingIndicatorComponent {
-
   @Input() icon: IconDefinition = faLink;
 
-  @Input() size: string = 'md';
-
+  @Input() size: 'sm' | 'md' | 'lg' = 'md';
 }

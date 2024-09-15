@@ -31,7 +31,6 @@ interface LinkForm {
   selector: 'app-link-pickler',
   standalone: true,
   imports: [
-    JsonPipe,
     CategorySelectorComponent,
     LinkCardComponent,
     LoadingIndicatorComponent,

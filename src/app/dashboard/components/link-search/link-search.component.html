@@ -1,1 +1,11 @@
-<p>link-search works!</p>
+<div class="pickle-search relative">
+  <input
+    class="m-0"
+    type="text"
+    id="searchTerm"
+    [(ngModel)]="searchTerm"
+    (ngModelChange)="searchChanged()"
+    placeholder="Type here to search"
+  />
+  <label for="searchTerm" class="absolute"><fa-icon [icon]="icon" /></label>
+</div>

@@ -7,13 +7,12 @@ import {
 } from '@angular/core';
 import { LinkService } from '../../services/link.service';
 import { LpLink } from '../../../../api/interfaces/link';
-import { LoadingIndicatorComponent } from '../../pickle-ui/loading-indicator/loading-indicator.component';
 import { LinkPicklerComponent } from '../components/link-pickler/link-pickler.component';
 import { LinkCardComponent } from './link-card/link-card.component';
 import { LpLinkQuery } from '../../../../api/interfaces/query';
 import { CategoryService } from '../../services/category.service';
-import { LpCategory } from '../../../../api/interfaces/category';
 import { ResultsInfoComponent } from '../components/results-info/results-info.component';
+import { LinkSearchComponent } from '../components/link-search/link-search.component';
 
 @Component({
   selector: 'app-links',
@@ -21,7 +20,7 @@ import { ResultsInfoComponent } from '../components/results-info/results-info.co
   imports: [
     LinkPicklerComponent,
     LinkCardComponent,
-    LoadingIndicatorComponent,
+    LinkSearchComponent,
     ResultsInfoComponent,
   ],
   templateUrl: './links.component.html',

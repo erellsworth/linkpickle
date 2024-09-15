@@ -26,8 +26,7 @@ export class LinkService {
   private currentQuery: LpLinkQuery = {};
   private queryCache = signal<queryCache[]>([]);
 
-  constructor(private http: HttpClient) {}
-
+  public loading = signal<boolean>(false);
   public links = computed(() => {
     const results = this.queryCache().find(
       (cache) => cache.query === JSON.stringify(this.currentQuery)
@@ -37,6 +36,8 @@ export class LinkService {
     }
     return;
   });
+
+  constructor(private http: HttpClient) {}
 
   public queryLinks(query: LpLinkQuery): void {
     this.currentQuery = query;
@@ -120,6 +121,17 @@ export class LinkService {
     }
   }
 
+  public async searchLinks(searchTerm: string) {
+    this.currentQuery = {
+      ...this.currentQuery,
+      ...{
+        searchTerm,
+      },
+    };
+
+    return this.updateCache();
+  }
+
   public async updateLink(
     link: LpLink,
     categories: LpCategory[] = []
@@ -179,6 +191,7 @@ export class LinkService {
   }
 
   private async updateCache(): Promise<void> {
+    this.loading.set(true);
     try {
       const params = this.httpParamsFromQuery(this.currentQuery);
       const result = await firstValueFrom(
@@ -207,5 +220,7 @@ export class LinkService {
         this.queryCache.set(caches);
       }
     } catch (e) {}
+
+    this.loading.set(false);
   }
 }

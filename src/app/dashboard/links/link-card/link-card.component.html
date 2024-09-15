@@ -51,7 +51,7 @@
         <fa-icon [icon]="icons.pinned" />
       </div>
     </app-tooltip>
-    } @if(link.id){
+    } @if(isEditable){
     <div class="p-2 cursor-pointer" (click)="showEditor()">
       <fa-icon [icon]="icons.edit" />
     </div>

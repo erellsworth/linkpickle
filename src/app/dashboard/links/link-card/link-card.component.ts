@@ -14,6 +14,7 @@ import { LinkSearchComponent } from '../../components/link-search/link-search.co
 import { LinkPicklerComponent } from '../../components/link-pickler/link-pickler.component';
 import { LinkService } from '../../../services/link.service';
 import { ToasterService } from '../../../services/toaster.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-link-card',
@@ -41,8 +42,13 @@ export class LinkCardComponent {
   constructor(
     private linkService: LinkService,
     private modalService: ModalService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private userService: UserService
   ) {}
+
+  public get isEditable(): boolean {
+    return this.link.UserId === this.userService.user().id;
+  }
 
   public showEditor(): void {
     this.modalService.show({

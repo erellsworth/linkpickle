@@ -1,13 +1,16 @@
 <div class="w-11 m-auto">
   <app-link-pickler />
 
-  @if (!loading && !links.length) {
-  <p>No Links found</p>
-  } @else {
-  <app-results-info />
-  } @for (link of links; track $index) {
+  <div class="grid align-items-center">
+    <div class="col-6">
+      <app-results-info />
+    </div>
+    <div class="col-6">
+      <app-link-search />
+    </div>
+  </div>
+
+  @for (link of links; track $index) {
   <app-link-card [link]="link" />
-  } @if (loading) {
-  <app-loading-indicator />
   }
 </div>
