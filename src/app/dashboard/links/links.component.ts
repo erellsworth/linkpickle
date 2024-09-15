@@ -31,7 +31,6 @@ import { PaginationComponent } from '../../pickle-ui/pagination/pagination.compo
 export class LinksComponent implements OnChanges {
   @Input()
   set page(page: string) {
-    console.log('set page', page);
     if (page === 'pinned') {
       this.query.pinned = true;
     } else {

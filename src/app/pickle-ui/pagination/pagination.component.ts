@@ -20,6 +20,10 @@ export class PaginationComponent {
     ].map((page) => page + 1);
   }
 
+  public get showPagination(): boolean {
+    return this.totalResults > this.resultsPerPage;
+  }
+
   public selectPage(page: number): void {
     this.currentPage = page;
     this.pageChanged.emit(this.currentPage);

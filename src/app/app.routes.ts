@@ -28,15 +28,15 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'login',
+    path: 'user/login',
     component: LoginComponent,
   },
   {
-    path: 'recover',
+    path: 'user/recover',
     component: RecoverComponent,
   },
   {
-    path: 'register',
+    path: 'user/register',
     component: RegisterComponent,
   },
 ];

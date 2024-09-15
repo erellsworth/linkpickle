@@ -1,15 +1,33 @@
 <app-page>
-    @if(formGroup) {
-    <form [formGroup]="formGroup" class="text-center w-6">
-        <label for="email">Email:</label>
-        <input type="email" id="email" formControlName="email" placeholder="email@example.com" />
+  @if(formGroup) {
+  <form [formGroup]="formGroup" class="text-center w-6">
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      id="email"
+      formControlName="email"
+      placeholder="email@example.com"
+    />
 
-        <label for="password">Password</label>
-        <input type="password" id="password" formControlName="password" placeholder="password" />
-        <button type="button" class="w-9" (click)="login()" [disabled]="formGroup.invalid">Login</button>
-    </form>
-    }
-    <div class="text-center">
-        <a class="p-2" href="/register">Register</a> <a class="p-2" href="/recover">Forgot Password</a>
-    </div>
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      formControlName="password"
+      placeholder="password"
+    />
+    <button
+      type="button"
+      class="w-9"
+      (click)="login()"
+      [disabled]="formGroup.invalid"
+    >
+      Login
+    </button>
+  </form>
+  }
+  <div class="text-center">
+    <a class="p-2" href="/user/register">Register</a>
+    <a class="p-2" href="/user/recover">Forgot Password</a>
+  </div>
 </app-page>
