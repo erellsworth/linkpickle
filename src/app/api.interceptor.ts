@@ -12,7 +12,6 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const userService = inject(UserService);
   const router = inject(Router);
 
-  console.log('intercept');
   let headers = {
     Authorization: 'Bearer ' + userService.token,
   };

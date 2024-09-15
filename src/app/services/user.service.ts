@@ -28,7 +28,6 @@ export class UserService {
   }
 
   public clearUser(): void {
-    console.log('clearUser');
     this.user.set({} as LpUser);
     this.localStore.setValue('PickleUser', {});
   }

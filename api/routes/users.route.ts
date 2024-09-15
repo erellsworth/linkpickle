@@ -2,16 +2,6 @@ import { Request, Response } from 'express';
 import usersRouter from './router';
 import { errorResponse, successResponse } from '../utils/responses';
 import { Setting, User } from '../models';
-import isAuthenticated from './auth.midleware';
-import { LpUser } from '../interfaces/user';
-
-usersRouter.get(
-  '/user/check',
-  isAuthenticated,
-  async (req: Request, res: Response) => {
-    successResponse(res, {});
-  }
-);
 
 //TODO: add email verification step
 usersRouter.post(
