@@ -8,7 +8,7 @@ import { first, firstValueFrom, timer } from 'rxjs';
 export class ToasterService {
   public toasts = signal<PickleToast[]>([]);
 
-  private _duration = 4000; // 3 second default
+  private _duration = 3500; // 3.5 second default
   private _toastId = 0;
 
   constructor() {}
@@ -30,19 +30,19 @@ export class ToasterService {
     });
 
     if (!toast.sticky) {
-      this.delayedDismiss(toast);
+      this.delayedDismiss(newToast);
     }
   }
 
   public dismiss(id: number): void {
     this.toasts.update((toasts) => toasts.filter((toast) => toast.id !== id));
-    console.log('dismissed', this.toasts());
   }
 
   private async delayedDismiss(toast: PickleToast): Promise<void> {
     if (!toast.id || toast.severity === 'error') {
       return;
     }
+
     const duration = toast.duration || this._duration;
 
     await firstValueFrom(timer(duration));
