@@ -1,6 +1,6 @@
 .sidebar {
   position: sticky;
   top: 1rem;
-  max-height: 100vh;
+  height: calc(100vh - 1.5rem);
   overflow: scroll;
 }
