@@ -57,6 +57,7 @@ export class UserService {
 
   public async register(credentials: {
     email: string;
+    userName: string;
     password: string;
     confirmPassword: string;
   }): Promise<GenericResult> {
