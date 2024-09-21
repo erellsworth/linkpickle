@@ -9,6 +9,7 @@ import { LpLink, LpLinkPreview } from '../interfaces/link';
 import { LpCategory } from '../interfaces/category';
 import { LpLinkQuery } from '../interfaces/query';
 import { Op } from 'sequelize';
+import { Notification } from '../models/Notification.model';
 
 linksRouter.get(
   '/links/search',
@@ -180,6 +181,19 @@ linksRouter.post(
       newLink.addCategories(categoryIds);
 
       successResponse(res, newLink);
+
+      Notification.model.create(
+        {
+          title: `${user.userName} posted a new link`,
+          text: newLink.title,
+          UserId: user.id,
+          LinkId: newLink.id,
+          status: 'unread',
+        },
+        {
+          include: [Link.model],
+        }
+      );
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }

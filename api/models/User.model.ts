@@ -14,6 +14,11 @@ const attributes: ModelAttributes<LpUserInstance> = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'pickler',
+  },
   id: {
     primaryKey: true,
     type: DataTypes.INTEGER,

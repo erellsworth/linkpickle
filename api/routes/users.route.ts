@@ -9,11 +9,16 @@ usersRouter.post(
   async (
     req: Request<
       {},
-      { email: string; password: string; confirmPassword: string }
+      {
+        email: string;
+        userName: string;
+        password: string;
+        confirmPassword: string;
+      }
     >,
     res: Response
   ) => {
-    const { email, password, confirmPassword } = req.body;
+    const { email, userName, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
       return errorResponse(res, 'Passwords to not match');
@@ -36,7 +41,7 @@ usersRouter.post(
         return errorResponse(res, 'Registration currently disabled');
       }
 
-      const result = await User.register(email, password);
+      const result = await User.register(email, userName, password);
 
       if (result.success) {
         return successResponse(res, {});

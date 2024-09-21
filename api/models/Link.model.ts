@@ -236,7 +236,11 @@ const Link = {
       [query.orderBy || 'createdAt', query.order || 'DESC'],
     ];
 
-    const include: Includeable[] = [Comment.model, Site.model];
+    const include: Includeable[] = [
+      Comment.model,
+      Site.model,
+      { model: User.model, attributes: ['userName'] },
+    ];
 
     if (query.categoryIds) {
       include.push({

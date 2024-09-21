@@ -5,6 +5,8 @@ import { Model, Optional } from 'sequelize';
 import { LpToken } from './token';
 import { LpHashBrown } from './hash';
 
+export type LpUserRole = 'pickler' | 'picklemaster';
+
 export interface LpUser extends LpBase {
   email: string;
   userName: string;
@@ -12,6 +14,7 @@ export interface LpUser extends LpBase {
   Comments: LpComment[];
   Token?: LpToken;
   HashBrown?: LpHashBrown;
+  role: LpUserRole;
 }
 
 export interface LpUserCreationAttributes extends Optional<LpUser, 'id'> {}
