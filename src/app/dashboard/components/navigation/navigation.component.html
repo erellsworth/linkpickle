@@ -1,29 +1,33 @@
-<ul class="flex flex-wrap justify-content-evenly">
-  <li class="w-6">
-    <a
-      [routerLink]="['/']"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      ><fa-icon class="p-2" [icon]="icons.home" />Home</a
-    >
-  </li>
-  <li class="w-6">
-    <a [routerLink]="['pinned']" routerLinkActive="active"
-      ><fa-icon class="p-2" [icon]="icons.pinned" />Pinned</a
-    >
-  </li>
-</ul>
-<h4>Categories:</h4>
-<ul>
-  @for (cat of categories; track $index) {
-  <li>
-    <a [routerLink]="['category', cat.id]" routerLinkActive="active">
-      <fa-icon [icon]="icons.jar" class="p-2" />
-      {{ cat.name }} ({{ cat.Links?.length || 0 }})
-    </a>
-  </li>
-  }
-  <li class="cursor-pointer" (click)="logout()">
-    <a><fa-icon [icon]="icons.logOut" class="p-2" />Log Out</a>
-  </li>
-</ul>
+<div class="flex flex-column">
+  <ul class="flex flex-wrap justify-content-evenly">
+    <li class="w-6">
+      <a
+        [routerLink]="['/']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><fa-icon class="p-2" [icon]="icons.home" />Home</a
+      >
+    </li>
+    <li class="w-6">
+      <a [routerLink]="['pinned']" routerLinkActive="active"
+        ><fa-icon class="p-2" [icon]="icons.pinned" />Pinned</a
+      >
+    </li>
+  </ul>
+  <h4 class="m-0">Categories:</h4>
+  <ul>
+    @for (cat of categories; track $index) {
+    <li>
+      <a [routerLink]="['category', cat.id]" routerLinkActive="active">
+        <fa-icon [icon]="icons.jar" class="p-2" />
+        {{ cat.name }} ({{ cat.Links?.length || 0 }})
+      </a>
+    </li>
+    }
+  </ul>
+  <ul>
+    <li class="cursor-pointer" (click)="logout()">
+      <a><fa-icon [icon]="icons.logOut" class="p-2" />Log Out</a>
+    </li>
+  </ul>
+</div>
