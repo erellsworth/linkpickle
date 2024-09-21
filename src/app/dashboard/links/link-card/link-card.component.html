@@ -6,7 +6,7 @@
   class="link-card p-3 flex justify-content-between"
   [class.preview]="!link.id"
 >
-  <div>
+  <div class="w-full">
     <div class="flex">
       @if(link.thumbnail) {
       <div class="thumbnail pr-2">
@@ -28,9 +28,10 @@
       <p>
         <a [href]="link.url" target="_blank">{{ link.url }}</a>
       </p>
-      @if(link.Categories?.length) {
+
       <hr />
       <div class="flex">
+        @if(link.Categories?.length) {
         <h2 class="py-1 px-2"><fa-icon [icon]="icons.jar" /></h2>
 
         <ul>
@@ -40,8 +41,11 @@
           </li>
           }
         </ul>
+        }
+        <p class="flex-grow-1 text-right align-self-center">
+          Added by: {{ userName }}
+        </p>
       </div>
-      }
     </div>
   </div>
   <div>

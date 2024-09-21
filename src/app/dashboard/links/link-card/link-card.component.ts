@@ -50,6 +50,13 @@ export class LinkCardComponent {
     return this.link.UserId === this.userService.user().id;
   }
 
+  public get userName(): string {
+    if (!this.link.id) {
+      return 'You';
+    }
+    return this.isEditable ? 'You' : this.link?.User?.userName || 'Unknown';
+  }
+
   public showEditor(): void {
     this.modalService.show({
       componant: LinkPicklerComponent,
