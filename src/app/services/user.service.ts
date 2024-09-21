@@ -1,4 +1,4 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { LpUser } from '../../../api/interfaces/user';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -16,7 +16,7 @@ export class UserService {
     }
   }
 
-  public user: WritableSignal<LpUser> = signal({} as LpUser);
+  public user = signal<LpUser>({} as LpUser);
 
   public get isLoggedIn(): boolean {
     return Boolean(this.token);

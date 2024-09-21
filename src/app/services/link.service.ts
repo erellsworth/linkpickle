@@ -44,6 +44,21 @@ export class LinkService {
     this.updateCache();
   }
 
+  public async getLink(LinkId: number): Promise<LpLink | string> {
+    try {
+      const result = await firstValueFrom(
+        this.http.get<ApiResponse<LpLink>>(`api/link/${LinkId}`)
+      );
+      if (result.success) {
+        return result.data as LpLink;
+      }
+
+      return result.error?.message || 'Unknown Error';
+    } catch (e) {
+      return (e as Error).message;
+    }
+  }
+
   public async getLinkPreview(
     url?: string
   ): Promise<{ preview: LpLinkPreview; siteName: string } | string> {

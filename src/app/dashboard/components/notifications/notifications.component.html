@@ -1,0 +1,27 @@
+<a class="cursor-pointer" (click)="showNotifications = !showNotifications"
+  ><fa-icon
+    [icon]="icon"
+    class="p-2 block"
+    [class.has-notifications]="notifications.length"
+  />Notifications</a
+>
+@if(showNotifications) {
+<div class="absolute left-0 right-0 bg-primary-reverse text-left">
+  @for (notification of notifications; track $index) {
+  <div
+    class="cursor-pointer  py-1 px-2 m-2 notification border-round {{
+      notification.status
+    }}"
+    (click)="readNotification(notification)"
+  >
+    <p class="m-0">{{ notification.title }}:</p>
+    <p class="m-0">
+      <small>{{ notification.text }}</small>
+    </p>
+  </div>
+  } @if (!notifications.length) {
+  <p>No notifications</p>
+
+  }
+</div>
+}

@@ -6,6 +6,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { RecoverComponent } from './auth/recover/recover.component';
 import { LinksComponent } from './dashboard/links/links.component';
 import { CategoryComponent } from './dashboard/category/category.component';
+import { LinkComponent } from './dashboard/link/link.component';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,10 @@ export const routes: Routes = [
       {
         path: 'category/:id',
         component: CategoryComponent,
+      },
+      {
+        path: 'link/:id',
+        component: LinkComponent,
       },
     ],
   },

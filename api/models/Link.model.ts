@@ -67,8 +67,23 @@ const attributes: ModelAttributes<LpLinkInstance> = {
 
 const LinkModel = db.define<LpLinkInstance>('Link', attributes);
 
+const standardIncludes = [
+  Comment.model,
+  Site.model,
+  { model: User.model, attributes: ['userName'] },
+];
+
 const Link = {
   model: LinkModel,
+  findById: async (UserId: number, id: number) => {
+    return LinkModel.findOne({
+      where: {
+        id,
+        [Op.or]: [{ UserId }, { isPublic: true }],
+      },
+      include: [...standardIncludes, Category.model],
+    });
+  },
   findByUrl: async (UserId: number, url: string) => {
     return LinkModel.findOne({
       where: {
@@ -236,11 +251,7 @@ const Link = {
       [query.orderBy || 'createdAt', query.order || 'DESC'],
     ];
 
-    const include: Includeable[] = [
-      Comment.model,
-      Site.model,
-      { model: User.model, attributes: ['userName'] },
-    ];
+    const include: Includeable[] = [...standardIncludes];
 
     if (query.categoryIds) {
       include.push({

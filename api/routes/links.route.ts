@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import urlMetadata from 'url-metadata';
 import linksRouter from './router';
 import { errorResponse, successResponse } from '../utils/responses';
-import { Category, Comment, Link, Site, User } from '../models';
+import { Category, Link, Site } from '../models';
 import isAuthenticated from './auth.midleware';
 import { LpUser } from '../interfaces/user';
 import { LpLink, LpLinkPreview } from '../interfaces/link';
@@ -10,6 +10,27 @@ import { LpCategory } from '../interfaces/category';
 import { LpLinkQuery } from '../interfaces/query';
 import { Op } from 'sequelize';
 import { Notification } from '../models/Notification.model';
+
+linksRouter.get(
+  '/link/:id',
+  isAuthenticated,
+  async (req: Request<{ id: number }>, res: Response) => {
+    try {
+      const id = req.params.id;
+      const user = req.user as LpUser;
+
+      const link = await Link.findById(user.id, id);
+
+      if (link) {
+        return successResponse(res, link);
+      }
+
+      errorResponse(res, 'Link not found', 404);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  }
+);
 
 linksRouter.get(
   '/links/search',
@@ -182,18 +203,20 @@ linksRouter.post(
 
       successResponse(res, newLink);
 
-      Notification.model.create(
-        {
-          title: `${user.userName} posted a new link`,
-          text: newLink.title,
-          UserId: user.id,
-          LinkId: newLink.id,
-          status: 'unread',
-        },
-        {
-          include: [Link.model],
-        }
-      );
+      if (newLink.isPublic) {
+        Notification.model.create(
+          {
+            title: `${user.userName} posted a new link`,
+            text: newLink.title,
+            UserId: user.id,
+            LinkId: newLink.id,
+            status: 'unread',
+          },
+          {
+            include: [Link.model],
+          }
+        );
+      }
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }

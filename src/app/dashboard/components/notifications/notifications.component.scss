@@ -1,0 +1,13 @@
+.has-notifications {
+  color: var(--primary-color);
+}
+
+.notification {
+  background: var(--primary-color);
+  color: var(--primary-color-text);
+
+  &.read {
+    background: var(--primary-dark);
+    color: var(--primary-light);
+  }
+}

@@ -1,19 +1,20 @@
 <div class="flex flex-column">
   <ul class="flex flex-wrap justify-content-evenly">
-    <li class="w-6">
-      <a
-        [routerLink]="['/']"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        ><fa-icon class="p-2" [icon]="icons.home" />Home</a
+    <li class="w-3 text-center">
+      <a [routerLink]="['/']"
+        ><fa-icon class="p-2 block" [icon]="icons.home" />Home</a
       >
     </li>
-    <li class="w-6">
+    <li class="w-3 text-center">
       <a [routerLink]="['pinned']" routerLinkActive="active"
-        ><fa-icon class="p-2" [icon]="icons.pinned" />Pinned</a
+        ><fa-icon class="p-2 block" [icon]="icons.pinned" /> Pinned</a
       >
+    </li>
+    <li class="w-4 text-center">
+      <app-notifications />
     </li>
   </ul>
+
   <h4 class="m-0">Categories:</h4>
   <ul>
     @for (cat of categories; track $index) {

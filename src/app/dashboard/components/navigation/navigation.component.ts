@@ -4,6 +4,7 @@ import { LpCategory } from '../../../../../api/interfaces/category';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
+  faBell,
   faHome,
   faJar,
   faRightFromBracket,
@@ -11,11 +12,17 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from '../../../services/user.service';
 import { LpUser } from '../../../../../api/interfaces/user';
+import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [FontAwesomeModule, RouterLink, RouterLinkActive],
+  imports: [
+    FontAwesomeModule,
+    NotificationsComponent,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss',
 })
@@ -24,8 +31,11 @@ export class NavigationComponent {
     home: faHome,
     jar: faJar,
     logOut: faRightFromBracket,
+    notifications: faBell,
     pinned: faThumbTack,
   };
+
+  public showNotifications = false;
 
   constructor(
     private categoryService: CategoryService,
