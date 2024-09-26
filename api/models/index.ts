@@ -9,6 +9,7 @@ import { Token } from './Token.model';
 import { LinkCategoryModel } from './LinkCategory.model';
 import { db } from '../utils/db';
 import { Notification } from './Notification.model';
+import { NotificationStatus } from './NotificationStatus.model';
 
 Category.model.hasMany(Category.model, {
   as: 'Children',
@@ -32,8 +33,10 @@ Link.model.belongsToMany(Category.model, {
 Link.model.hasMany(Comment.model);
 Link.model.belongsTo(Site.model);
 Link.model.belongsTo(User.model);
-Notification.model.belongsTo(User.model);
+Notification.model.belongsTo(Comment.model);
 Notification.model.belongsTo(Link.model);
+Notification.model.belongsTo(User.model);
+NotificationStatus.model.belongsTo(Notification.model);
 Setting.model.belongsTo(User.model);
 Site.model.hasMany(Link.model);
 Token.model.belongsTo(User.model);
@@ -42,7 +45,7 @@ User.model.hasOne(HashBrown.model);
 User.model.hasMany(Link.model);
 User.model.hasOne(Token.model);
 User.model.hasMany(Setting.model);
-//User.model.hasMany(Notification.model);
+User.model.hasMany(NotificationStatus.model);
 
 const prepare = async () => {
   const tables: any = await db.getQueryInterface().showAllSchemas();

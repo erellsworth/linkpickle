@@ -35,8 +35,19 @@ export class NotificationsComponent {
     return this.notificationService.notifications();
   }
 
-  public readNotification(notification: LpNotification): void {
-    this.notificationService.readNotification(notification.id);
+  public async readNotification(notification: LpNotification): Promise<void> {
+    const result = await this.notificationService.readNotification(
+      notification.id
+    );
+
+    if (typeof result === 'string') {
+      this.toaster.add({
+        title: 'Problem updating notification status',
+        message: result,
+        severity: 'warning',
+      });
+    }
+
     if (notification.LinkId) {
       this.router.navigate(['/link', notification.LinkId]);
     }

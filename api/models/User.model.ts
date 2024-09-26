@@ -4,6 +4,7 @@ import { LpUser, LpUserInstance } from '../interfaces/user';
 import { GenericResult } from '../interfaces/api';
 import { HashBrown } from './HashBrown.model';
 import { Token } from './Token.model';
+import { NotificationStatus } from './NotificationStatus.model';
 
 const attributes: ModelAttributes<LpUserInstance> = {
   email: {
@@ -60,7 +61,10 @@ const User = {
           [Op.gt]: new Date(),
         },
       },
-      include: UserModel,
+      include: {
+        model: UserModel,
+        include: [NotificationStatus.model],
+      },
     });
 
     if (userToken) {

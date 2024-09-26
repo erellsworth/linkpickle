@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../../../api/interfaces/api';
+import { LpNotificationStatus } from '../../../api/interfaces/notificationStatus.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -29,14 +30,32 @@ export class NotificationService {
     } catch (e) {}
   }
 
-  public async readNotification(notificationId: number): Promise<void> {
-    this.notifications.update((notifications) =>
-      notifications.map((notification) => {
-        if (notification.id === notificationId) {
-          notification.status = 'read';
-        }
-        return notification;
-      })
-    );
+  public async readNotification(
+    notificationId: number
+  ): Promise<true | string> {
+    try {
+      const result = await firstValueFrom(
+        this.http.patch<ApiResponse<LpNotificationStatus>>(
+          `api/notifications/read/${notificationId}`,
+          {}
+        )
+      );
+
+      if (result.success) {
+        this.notifications.update((notifications) =>
+          notifications.map((notification) => {
+            if (notification.id === notificationId) {
+              notification.status = 'read';
+            }
+            return notification;
+          })
+        );
+        return true;
+      }
+
+      return result.error?.message || 'Unknown Error';
+    } catch (e) {
+      return (e as Error).message;
+    }
   }
 }

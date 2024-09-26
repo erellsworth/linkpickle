@@ -2,7 +2,7 @@ import { Model, Optional } from 'sequelize';
 import { LpBase } from './base';
 
 export interface LpNotification extends LpBase {
-  status: 'read' | 'unread';
+  status?: 'read' | 'unread';
   title: string;
   text: string;
   LinkId?: number;

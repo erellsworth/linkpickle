@@ -4,8 +4,11 @@ import {
   LpNotification,
   LpNotificationInstance,
 } from '../interfaces/notification';
-import { title } from 'process';
 import { Link } from './Link.model';
+import { NotificationStatus } from './NotificationStatus.model';
+import { User } from './User.model';
+import { Comment } from './Comment.model';
+import { LpUser } from '../interfaces/user';
 
 const attributes: ModelAttributes<LpNotificationInstance> = {
   title: {
@@ -13,10 +16,6 @@ const attributes: ModelAttributes<LpNotificationInstance> = {
     allowNull: false,
   },
   text: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  status: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -48,14 +47,23 @@ const NotificationModel = db.define<LpNotificationInstance>(
 
 const Notification = {
   model: NotificationModel,
-  findForUser: async (userId: number): Promise<LpNotification[]> => {
+  findForUser: async (user: LpUser): Promise<LpNotification[]> => {
     // find all the notifications originating from other users
     // TODO: consider reworking this so users can get notifications only from specific users
-    return NotificationModel.findAll({
+    const notifications = await NotificationModel.findAll({
       where: {
-        UserId: { [Op.ne]: userId },
+        UserId: { [Op.ne]: user.id },
       },
-      include: [Link.model],
+      include: [Link.model, Comment.model],
+    });
+
+    return notifications.map((notification) => {
+      const notificationObj = notification.toJSON();
+      const status = user.NotificationStatuses?.find(
+        (stat) => stat.NotificationId === notificationObj.id
+      );
+      notificationObj.status = status?.status || 'unread';
+      return notificationObj;
     });
   },
 };
