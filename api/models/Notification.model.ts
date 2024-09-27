@@ -1,4 +1,4 @@
-import { DataTypes, ModelAttributes, Op } from 'sequelize';
+import { DataTypes, Includeable, ModelAttributes, Op } from 'sequelize';
 import { db } from '../utils/db';
 import {
   LpNotification,
@@ -9,6 +9,7 @@ import { NotificationStatus } from './NotificationStatus.model';
 import { User } from './User.model';
 import { Comment } from './Comment.model';
 import { LpUser } from '../interfaces/user';
+import { socket } from '..';
 
 const attributes: ModelAttributes<LpNotificationInstance> = {
   title: {
@@ -67,5 +68,19 @@ const Notification = {
     });
   },
 };
+
+NotificationModel.afterCreate(async (notification) => {
+  console.log('created');
+  const ws = await socket;
+  const message = {
+    notification: {
+      ...notification.toJSON(),
+      ...{
+        status: 'unread',
+      },
+    },
+  };
+  ws.send(JSON.stringify(message));
+});
 
 export { Notification };

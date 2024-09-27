@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { LpNotification } from '../../../api/interfaces/notification';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
@@ -11,6 +12,8 @@ import { LpNotificationStatus } from '../../../api/interfaces/notificationStatus
 })
 export class NotificationService {
   public notifications = signal<LpNotification[]>([]);
+  private ws$ = webSocket<{ notification: LpNotification }>('/socket');
+  public socket$ = this.ws$.asObservable();
 
   constructor(private http: HttpClient, private userService: UserService) {
     this.fetchNotifications();

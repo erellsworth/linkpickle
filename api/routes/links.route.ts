@@ -8,8 +8,8 @@ import { LpUser } from '../interfaces/user';
 import { LpLink, LpLinkPreview } from '../interfaces/link';
 import { LpCategory } from '../interfaces/category';
 import { LpLinkQuery } from '../interfaces/query';
-import { Op } from 'sequelize';
 import { Notification } from '../models/Notification.model';
+import { LpNotification } from '../interfaces/notification';
 
 linksRouter.get(
   '/link/:id',
@@ -210,7 +210,6 @@ linksRouter.post(
             text: newLink.title,
             UserId: user.id,
             LinkId: newLink.id,
-            status: 'unread',
           },
           {
             include: [Link.model],

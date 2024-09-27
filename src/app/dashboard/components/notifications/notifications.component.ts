@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +10,7 @@ import { LinkService } from '../../../services/link.service';
 import { LpLink } from '../../../../../api/interfaces/link';
 import { ToasterService } from '../../../services/toaster.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notifications',
@@ -18,8 +19,9 @@ import { Router } from '@angular/router';
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
 })
-export class NotificationsComponent {
+export class NotificationsComponent implements OnInit, OnDestroy {
   public showNotifications = false;
+  private _subs: Subscription[] = [];
 
   constructor(
     private notificationService: NotificationService,
@@ -27,8 +29,27 @@ export class NotificationsComponent {
     private toaster: ToasterService
   ) {}
 
+  ngOnInit(): void {
+    this._subs.push(
+      this.notificationService.socket$.subscribe(({ notification }) =>
+        this.notificationService.notifications.update((notifications) => {
+          notifications.unshift(notification);
+          return notifications;
+        })
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._subs.forEach((sub) => sub.unsubscribe());
+  }
+
   public get icon(): IconDefinition {
-    return this.notifications.length ? faBell : bellOutline;
+    return this.notifications.filter(
+      (notification) => notification.status === 'unread'
+    ).length
+      ? faBell
+      : bellOutline;
   }
 
   public get notifications(): LpNotification[] {
