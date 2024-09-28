@@ -16,6 +16,8 @@ import { Comment } from './Comment.model';
 import { Category } from './Category.model';
 import { User } from './User.model';
 import { LpLinkQuery } from '../interfaces/query';
+import { WebSocket } from 'ws';
+import { LpSocketMessage } from '../interfaces/web-socket.interface';
 
 const attributes: ModelAttributes<LpLinkInstance> = {
   url: {
@@ -290,6 +292,16 @@ const Link = {
       total: count,
       page,
     };
+  },
+  setupSocket: (ws: WebSocket) => {
+    LinkModel.afterCreate((link) => {
+      const message: LpSocketMessage = {
+        channel: 'links',
+        Link: link,
+        fromUserId: link.UserId as number,
+      };
+      ws.send(JSON.stringify(message));
+    });
   },
 };
 

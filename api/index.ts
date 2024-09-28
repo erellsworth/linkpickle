@@ -7,8 +7,9 @@ import categoriesRouter from './routes/categories.route';
 import settingsRouter from './routes/settings.route';
 import notificationsRouter from './routes/notifications.route';
 import { WebSocket, WebSocketServer } from 'ws';
-import { resolve } from 'path';
-import { rejects } from 'assert';
+import { LpSocketMessage } from './interfaces/web-socket.interface';
+import { Notification } from './models/Notification.model';
+import { Link } from './models';
 
 // Create express instance
 const app = express();
@@ -27,14 +28,26 @@ const server = app.listen(port, () => {
   console.log(`API server listening on port http://localhost:${port}`);
 });
 
-const wss = new WebSocketServer({ server });
-
-export const socket = new Promise<WebSocket>((resolve, rejects) => {
-  wss.on('connection', (ws) => {
-    resolve(ws);
-  });
-
-  wss.on('error', (err) => {
-    rejects(err);
-  });
+export const wss = new WebSocketServer({ server });
+wss.on('connection', (ws) => {
+  const connectMessage: LpSocketMessage = {
+    channel: 'generic',
+    message: 'connected',
+    fromUserId: 0,
+  };
+  ws.send(JSON.stringify(connectMessage));
+  Notification.setupSocket(ws);
+  Link.setupSocket(ws);
+  //pingSockets(ws); // for testing only
 });
+
+const pingSockets = (ws: WebSocket) => {
+  setInterval(() => {
+    const message: LpSocketMessage = {
+      channel: 'generic',
+      message: 'ping!',
+      fromUserId: 0,
+    };
+    ws.send(JSON.stringify(message));
+  }, 5000);
+};

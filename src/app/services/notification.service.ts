@@ -1,22 +1,42 @@
-import { Injectable, signal } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Injectable, OnDestroy, OnInit, signal } from '@angular/core';
 import { LpNotification } from '../../../api/interfaces/notification';
 import { HttpClient } from '@angular/common/http';
-import { UserService } from './user.service';
-import { firstValueFrom } from 'rxjs';
+import { filter, firstValueFrom, map, Subscription } from 'rxjs';
 import { ApiResponse } from '../../../api/interfaces/api';
 import { LpNotificationStatus } from '../../../api/interfaces/notificationStatus.interface';
+import { SocketService } from './socket.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationService {
+export class NotificationService implements OnDestroy {
   public notifications = signal<LpNotification[]>([]);
-  private ws$ = webSocket<{ notification: LpNotification }>('/socket');
-  public socket$ = this.ws$.asObservable();
 
-  constructor(private http: HttpClient, private userService: UserService) {
+  private _sub!: Subscription;
+
+  constructor(
+    private http: HttpClient,
+    private socketService: SocketService,
+    private userService: UserService
+  ) {
     this.fetchNotifications();
+    this._sub = this.socketService
+      .channel('notifications')
+      .pipe(
+        filter((message) => Boolean(message.Notification)),
+        map((message) => message.Notification)
+      )
+      .subscribe((notification) => {
+        this.notifications.update((notifications) => {
+          notifications.unshift(notification as LpNotification);
+          return notifications;
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._sub?.unsubscribe();
   }
 
   public async fetchNotifications(): Promise<void> {

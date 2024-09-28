@@ -9,7 +9,8 @@ import { NotificationStatus } from './NotificationStatus.model';
 import { User } from './User.model';
 import { Comment } from './Comment.model';
 import { LpUser } from '../interfaces/user';
-import { socket } from '..';
+import { LpSocketMessage } from '../interfaces/web-socket.interface';
+import { WebSocket } from 'ws';
 
 const attributes: ModelAttributes<LpNotificationInstance> = {
   title: {
@@ -56,6 +57,7 @@ const Notification = {
         UserId: { [Op.ne]: user.id },
       },
       include: [Link.model, Comment.model],
+      order: [['createdAt', 'DESC']],
     });
 
     return notifications.map((notification) => {
@@ -67,20 +69,21 @@ const Notification = {
       return notificationObj;
     });
   },
+  setupSocket: (ws: WebSocket) => {
+    NotificationModel.afterCreate((notification) => {
+      const message: LpSocketMessage = {
+        channel: 'notifications',
+        Notification: {
+          ...notification.toJSON(),
+          ...{
+            status: 'unread',
+          },
+        },
+        fromUserId: notification.UserId as number,
+      };
+      ws.send(JSON.stringify(message));
+    });
+  },
 };
-
-NotificationModel.afterCreate(async (notification) => {
-  console.log('created');
-  const ws = await socket;
-  const message = {
-    notification: {
-      ...notification.toJSON(),
-      ...{
-        status: 'unread',
-      },
-    },
-  };
-  ws.send(JSON.stringify(message));
-});
 
 export { Notification };

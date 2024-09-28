@@ -1,10 +1,6 @@
-import {
-  HttpClient,
-  HttpParams,
-  HttpParamsOptions,
-} from '@angular/common/http';
-import { computed, Injectable, signal } from '@angular/core';
-import { firstValueFrom, Subject } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { computed, Injectable, OnDestroy, signal } from '@angular/core';
+import { filter, firstValueFrom, map, Subscription } from 'rxjs';
 import { LpLink, LpLinkPreview } from '../../../api/interfaces/link';
 import {
   ApiResponse,
@@ -13,6 +9,7 @@ import {
 } from '../../../api/interfaces/api';
 import { LpCategory } from '../../../api/interfaces/category';
 import { LpLinkQuery } from '../../../api/interfaces/query';
+import { SocketService } from './socket.service';
 
 interface queryCache {
   query: string;
@@ -22,10 +19,7 @@ interface queryCache {
 @Injectable({
   providedIn: 'root',
 })
-export class LinkService {
-  private currentQuery: LpLinkQuery = {};
-  private queryCache = signal<queryCache[]>([]);
-
+export class LinkService implements OnDestroy {
   public loading = signal<boolean>(false);
   public links = computed(() => {
     const results = this.queryCache().find(
@@ -37,7 +31,19 @@ export class LinkService {
     return;
   });
 
-  constructor(private http: HttpClient) {}
+  private currentQuery: LpLinkQuery = {};
+  private queryCache = signal<queryCache[]>([]);
+  private _sub!: Subscription;
+
+  constructor(private http: HttpClient, private socketService: SocketService) {
+    this._sub = this.socketService
+      .channel('links')
+      .subscribe((link) => this.updateCache());
+  }
+
+  ngOnDestroy(): void {
+    this._sub?.unsubscribe();
+  }
 
   public queryLinks(query: LpLinkQuery): void {
     this.currentQuery = query;

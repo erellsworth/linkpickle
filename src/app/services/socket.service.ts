@@ -1,0 +1,23 @@
+import { Injectable } from '@angular/core';
+import { webSocket } from 'rxjs/webSocket';
+import { LpSocketMessage } from '../../../api/interfaces/web-socket.interface';
+import { catchError, filter, retry, tap, throwError } from 'rxjs';
+import { UserService } from './user.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SocketService {
+  private ws$ = webSocket<LpSocketMessage>('/socket');
+  private socket$ = this.ws$.asObservable().pipe(retry({ delay: 5000 }));
+
+  constructor(private userService: UserService) {}
+
+  public channel(channel: LpSocketMessage['channel']) {
+    return this.socket$.pipe(
+      tap((message) => console.log('messages', message)),
+      filter((message) => message.fromUserId !== this.userService.user().id),
+      filter((message) => message.channel === channel)
+    );
+  }
+}

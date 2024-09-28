@@ -18,31 +18,16 @@ import { Subscription } from 'rxjs';
   imports: [FontAwesomeModule],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
+  providers: [NotificationService],
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent {
   public showNotifications = false;
-  private _subs: Subscription[] = [];
 
   constructor(
     private notificationService: NotificationService,
     private router: Router,
     private toaster: ToasterService
   ) {}
-
-  ngOnInit(): void {
-    this._subs.push(
-      this.notificationService.socket$.subscribe(({ notification }) =>
-        this.notificationService.notifications.update((notifications) => {
-          notifications.unshift(notification);
-          return notifications;
-        })
-      )
-    );
-  }
-
-  ngOnDestroy(): void {
-    this._subs.forEach((sub) => sub.unsubscribe());
-  }
 
   public get icon(): IconDefinition {
     return this.notifications.filter(
