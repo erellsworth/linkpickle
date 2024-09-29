@@ -4,11 +4,12 @@ import { SettingsService } from '../../services/settings.service';
 import { LpSetting } from '../../../../api/interfaces/setting';
 import { JsonPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ToggleComponent } from '../../pickle-ui/forms/toggle/toggle.component';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [DashboardPageComponent, JsonPipe, ReactiveFormsModule],
+  imports: [DashboardPageComponent, ReactiveFormsModule, ToggleComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })

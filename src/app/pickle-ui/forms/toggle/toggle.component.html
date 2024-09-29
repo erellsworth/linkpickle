@@ -1,0 +1,8 @@
+<ng-container [formGroup]="formGroup">
+  <input
+    type="checkbox"
+    [id]="controlName()"
+    [formControlName]="controlName()"
+  />
+  <fa-icon (click)="toggle()" class="toggler cursor-pointer" [icon]="icon" />
+</ng-container>
