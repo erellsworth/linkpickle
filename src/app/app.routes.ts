@@ -7,6 +7,7 @@ import { RecoverComponent } from './auth/recover/recover.component';
 import { LinksComponent } from './dashboard/links/links.component';
 import { CategoryComponent } from './dashboard/category/category.component';
 import { LinkComponent } from './dashboard/link/link.component';
+import { SettingsComponent } from './dashboard/settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -19,16 +20,16 @@ export const routes: Routes = [
         component: LinksComponent,
       },
       {
-        path: ':page',
-        component: LinksComponent,
-      },
-      {
         path: 'category/:id',
         component: CategoryComponent,
       },
       {
         path: 'link/:id',
         component: LinkComponent,
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
     ],
   },

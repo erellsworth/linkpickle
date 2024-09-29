@@ -14,11 +14,13 @@ import { CategoryService } from '../../services/category.service';
 import { ResultsInfoComponent } from '../components/results-info/results-info.component';
 import { LinkSearchComponent } from '../components/link-search/link-search.component';
 import { PaginationComponent } from '../../pickle-ui/pagination/pagination.component';
+import { DashboardPageComponent } from '../components/dashboard-page/dashboard-page.component';
 
 @Component({
   selector: 'app-links',
   standalone: true,
   imports: [
+    DashboardPageComponent,
     LinkPicklerComponent,
     LinkCardComponent,
     LinkSearchComponent,
@@ -79,5 +81,6 @@ export class LinksComponent implements OnChanges {
   public changePage(page: number): void {
     this.page = page.toString();
     this.linkService.queryLinks(this.query);
+    window.scrollTo({ top: 0 });
   }
 }

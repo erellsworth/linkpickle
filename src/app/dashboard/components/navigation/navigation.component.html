@@ -27,6 +27,11 @@
     }
   </ul>
   <ul>
+    <li>
+      <a [routerLink]="['settings']"
+        ><fa-icon [icon]="icons.settings" class="p-2" />Settings</a
+      >
+    </li>
     <li class="cursor-pointer" (click)="logout()">
       <a><fa-icon [icon]="icons.logOut" class="p-2" />Log Out</a>
     </li>

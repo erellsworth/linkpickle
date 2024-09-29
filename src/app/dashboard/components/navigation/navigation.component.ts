@@ -5,6 +5,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBell,
+  faGear,
   faHome,
   faJar,
   faRightFromBracket,
@@ -33,6 +34,7 @@ export class NavigationComponent {
     logOut: faRightFromBracket,
     notifications: faBell,
     pinned: faThumbTack,
+    settings: faGear,
   };
 
   public showNotifications = false;

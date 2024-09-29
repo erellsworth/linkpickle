@@ -58,6 +58,7 @@ const Notification = {
       },
       include: [Link.model, Comment.model],
       order: [['createdAt', 'DESC']],
+      limit: 10,
     });
 
     return notifications.map((notification) => {

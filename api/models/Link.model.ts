@@ -294,6 +294,14 @@ const Link = {
     };
   },
   setupSocket: (ws: WebSocket) => {
+    LinkModel.afterUpdate((link) => {
+      const message: LpSocketMessage = {
+        channel: 'links',
+        Link: link,
+        fromUserId: link.UserId as number,
+      };
+      ws.send(JSON.stringify(message));
+    });
     LinkModel.afterCreate((link) => {
       const message: LpSocketMessage = {
         channel: 'links',

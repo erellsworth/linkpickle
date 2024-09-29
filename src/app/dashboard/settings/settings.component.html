@@ -1,0 +1,22 @@
+<app-dashboard-page [formGroup]="formGroup">
+  @if(userSettings.length){
+  <div>
+    <p>User Settings</p>
+
+    {{ userSettings | json }}
+  </div>
+  } @if(adminSettings.length) {
+  <div>
+    <p>Admin Settings</p>
+    @for (setting of adminSettings; track $index) {
+    <label [for]="setting.name">{{ setting.label }}</label>
+    @if(setting.dataType === 'boolean') {
+    <input
+      [id]="setting.name"
+      type="checkbox"
+      [formControlName]="setting.name"
+    />
+    } }
+  </div>
+  }
+</app-dashboard-page>
