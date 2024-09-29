@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express from 'express';
+import express, { Request } from 'express';
 import usersRouter from './routes/users.route';
 import sitesRouter from './routes/sites.route';
 import linksRouter from './routes/links.route';
@@ -9,7 +9,7 @@ import notificationsRouter from './routes/notifications.route';
 import { WebSocket, WebSocketServer } from 'ws';
 import { LpSocketMessage } from './interfaces/web-socket.interface';
 import { Notification } from './models/Notification.model';
-import { Link } from './models';
+import { Link, User } from './models';
 
 // Create express instance
 const app = express();
@@ -26,6 +26,23 @@ const port = process.env['PORT'] || 3001;
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`API server listening on port http://localhost:${port}`);
+});
+
+server.on('upgrade', async (req: Request, socket) => {
+  const url = new URL(req.url, 'ws://localhost');
+  const token = url.searchParams.get('token');
+  let isValid = false;
+  if (token) {
+    const user = await User.findByToken(token);
+    if (user) {
+      isValid = true;
+    }
+  }
+
+  if (!isValid) {
+    socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+    socket.destroy();
+  }
 });
 
 export const wss = new WebSocketServer({ server });
