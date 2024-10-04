@@ -1,19 +1,24 @@
 <app-dashboard-page [formGroup]="formGroup">
-  @if(userSettings.length){
-  <div>
-    <p>User Settings</p>
-  </div>
-  } @if(adminSettings.length) {
-  <div>
-    <p>Admin Settings</p>
-    @for (setting of adminSettings; track $index) { @if(setting.dataType ===
-    'boolean') {
-    <label [for]="setting.name">
-      {{ setting.name }}
-    </label>
-    <app-toggle [controlName]="setting.name" [label]="setting.label" />
-
-    } }
-  </div>
+  @if (userSettings.length) {
+    <p>User Settings:</p>
+    <hr />
   }
+  @if (adminSettings.length) {
+    <p>Admin Settings:</p>
+    @for (setting of adminSettings; track $index) {
+      <div class="flex align-items-center gap-3">
+        <label [for]="setting.name"> {{ setting.label }}: </label>
+        @switch (setting.dataType) {
+          @case ("boolean") {
+            <app-toggle [controlName]="setting.name" />
+          }
+        }
+      </div>
+    }
+    <button type="button" class="mx-0" (click)="addSetting()">
+      Add new setting
+    </button>
+  }
+  <hr />
+  <button type="button" class="mx-0" (click)="save()">Save Settings</button>
 </app-dashboard-page>

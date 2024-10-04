@@ -77,9 +77,8 @@ const Setting = {
     return SettingModel.findAll({ where });
   },
   findByName: async (
-    user: LpUser,
     name: string,
-    defaultValue: string = ''
+    defaultValue: string = '',
   ): Promise<string> => {
     const setting = await SettingModel.findOne({
       where: {

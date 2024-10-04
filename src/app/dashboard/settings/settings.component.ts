@@ -5,6 +5,7 @@ import { LpSetting } from '../../../../api/interfaces/setting';
 import { JsonPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ToggleComponent } from '../../pickle-ui/forms/toggle/toggle.component';
+import { ToasterService } from '../../services/toaster.service';
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +19,8 @@ export class SettingsComponent {
 
   constructor(
     private fb: FormBuilder,
-    private settingService: SettingsService
+    private settingService: SettingsService,
+    private toaster: ToasterService,
   ) {
     effect(() => {
       this.settingService
@@ -33,6 +35,25 @@ export class SettingsComponent {
 
   public get userSettings(): LpSetting[] {
     return this.settingService.settings().filter((setting) => !setting.isAdmin);
+  }
+
+  public addSetting() {}
+
+  public async save(): Promise<void> {
+    const result = await this.settingService.saveSettings(this.formGroup.value);
+    if (result.success) {
+      this.toaster.add({
+        title: 'Success',
+        message: 'Settings saved',
+        severity: 'success',
+      });
+    } else {
+      this.toaster.add({
+        title: 'Error',
+        message: result.error?.message || 'Unknown Error',
+        severity: 'error',
+      });
+    }
   }
 
   private addControl(setting: LpSetting): void {

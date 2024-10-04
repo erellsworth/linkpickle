@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { LpSetting } from '../../../api/interfaces/setting';
 import { firstValueFrom } from 'rxjs';
-import { ApiResponse } from '../../../api/interfaces/api';
+import { ApiResponse, GenericResult } from '../../../api/interfaces/api';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +14,24 @@ export class SettingsService {
     this.fetchSettings();
   }
 
+  public async saveSettings(settings: {
+    [key: string]: string;
+  }): Promise<GenericResult> {
+    try {
+      return firstValueFrom(
+        this.http.patch<ApiResponse>('api/settings', { settings }),
+      );
+    } catch (e) {
+      return {
+        success: false,
+        error: e as Error,
+      };
+    }
+  }
+
   private async fetchSettings(): Promise<void> {
     const results = await firstValueFrom(
-      this.http.get<ApiResponse<LpSetting[]>>('api/settings')
+      this.http.get<ApiResponse<LpSetting[]>>('api/settings'),
     );
     if (results.success) {
       this.settings.set(results.data as LpSetting[]);

@@ -29,7 +29,7 @@ linksRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.get(
@@ -47,7 +47,7 @@ linksRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.get(
@@ -55,7 +55,7 @@ linksRouter.get(
   isAuthenticated,
   async (
     req: Request<{ id: number; page: number }, {}, {}, { limit?: number }>,
-    res: Response
+    res: Response,
   ) => {
     const page = req.params.page || 1;
     const limit = req.query.limit || 9;
@@ -66,13 +66,13 @@ linksRouter.get(
         user.id,
         req.params.id,
         page,
-        limit
+        limit,
       );
       successResponse(res, links);
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.get(
@@ -111,7 +111,7 @@ linksRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.get(
@@ -119,7 +119,7 @@ linksRouter.get(
   isAuthenticated,
   async (
     req: Request<{ page: number }, {}, {}, { limit?: number }>,
-    res: Response
+    res: Response,
   ) => {
     const page = req.params.page || 1;
     const limit = req.query.limit || 9;
@@ -131,15 +131,15 @@ linksRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.post(
   '/links',
   isAuthenticated,
   async (
-    req: Request<{}, { link: LpLink; categories: LpCategory[] }>,
-    res: Response
+    req: Request<{}, {}, { link: LpLink; categories: LpCategory[] }>,
+    res: Response,
   ) => {
     if (!req.body.link || !req.body.link.url) {
       return errorResponse(res, 'Missing required link data', 400);
@@ -159,7 +159,7 @@ linksRouter.post(
 
       const site = await Site.getFromDomain(
         url.hostname.replace(/^[^.]+\./g, ''),
-        metadata
+        metadata,
       );
 
       const link = {
@@ -181,7 +181,7 @@ linksRouter.post(
       }
 
       const newCategories = req.body.categories.filter(
-        (cat: LpCategory) => !Boolean(cat.id)
+        (cat: LpCategory) => !Boolean(cat.id),
       );
 
       const newCatIds: number[] = [];
@@ -213,21 +213,21 @@ linksRouter.post(
           },
           {
             include: [Link.model],
-          }
+          },
         );
       }
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.put(
   '/links',
   isAuthenticated,
   async (
-    req: Request<{}, { link: LpLink; categories: LpCategory[] }>,
-    res: Response
+    req: Request<{}, {}, { link: LpLink; categories: LpCategory[] }>,
+    res: Response,
   ) => {
     if (!req.body.link || !req.body.link.url || !req.body.link.id) {
       return errorResponse(res, 'Missing required link data', 400);
@@ -248,13 +248,13 @@ linksRouter.put(
         const duplicateLink = await Link.findDuplicate(
           user.id,
           url.toString(),
-          req.body.link.id
+          req.body.link.id,
         );
         if (duplicateLink) {
           return errorResponse(
             res,
             'Another link already exists with this url',
-            404
+            404,
           );
         }
       }
@@ -263,7 +263,7 @@ linksRouter.put(
 
       const site = await Site.getFromDomain(
         url.hostname.replace(/^[^.]+\./g, ''),
-        metadata
+        metadata,
       );
 
       const link = {
@@ -285,7 +285,7 @@ linksRouter.put(
       }
 
       const newCategories = req.body.categories.filter(
-        (cat: LpCategory) => !Boolean(cat.id)
+        (cat: LpCategory) => !Boolean(cat.id),
       );
 
       const newCatIds: number[] = [];
@@ -311,7 +311,7 @@ linksRouter.put(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 linksRouter.delete(
@@ -339,7 +339,7 @@ linksRouter.delete(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 export default linksRouter;

@@ -1,4 +1,9 @@
 <ng-container [formGroup]="formGroup">
+  @if (label()) {
+  <label [for]="controlName()">
+    {{ label() }}
+  </label>
+  }
   <input
     type="checkbox"
     [id]="controlName()"

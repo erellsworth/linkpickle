@@ -20,7 +20,7 @@ import {
 })
 export class ToggleComponent {
   public controlName = input.required<string>();
-  public label = input.required<string>();
+  public label = input<string>();
   public value!: boolean;
 
   public icons = input({

@@ -8,6 +8,7 @@ import {
 import { Setting } from '../models';
 import isAuthenticated from './auth.midleware';
 import { LpUser } from '../interfaces/user';
+import { LpSetting } from '../interfaces/setting';
 
 settingsRouter.get(
   '/settings/:name?',
@@ -29,7 +30,41 @@ settingsRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
+);
+
+settingsRouter.patch(
+  '/settings',
+  isAuthenticated,
+  async (
+    req: Request<{}, {}, { settings: { [key: string]: string } }>,
+    res: Response,
+  ) => {
+    try {
+      const { settings } = req.body;
+      await Promise.all(
+        Object.keys(settings).map(async (name) => {
+          const value = settings[name].toString();
+          return Setting.model.update(
+            { value },
+            {
+              where: { name },
+            },
+          );
+        }),
+      );
+
+      successResponse(res, settings);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  },
+);
+
+settingsRouter.post(
+  '/settings',
+  isAuthenticated,
+  async (req: Request<{}, {}, { setting: LpSetting }>, res: Response) => {},
 );
 
 export default settingsRouter;
