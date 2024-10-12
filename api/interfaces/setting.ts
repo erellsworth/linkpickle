@@ -4,10 +4,15 @@ import { LpBase } from './base';
 export interface LpSetting extends LpBase {
   name: string;
   label: string;
-  value: string;
   isAdmin: boolean;
   dataType: 'boolean' | 'string' | 'number';
-  UserId?: number;
+  SettingValue?: LpSettingValue;
+}
+
+export interface LpSettingValue {
+  UserId: number;
+  SettingId: number;
+  value: string;
 }
 
 export interface LpSettingCreationAttributes

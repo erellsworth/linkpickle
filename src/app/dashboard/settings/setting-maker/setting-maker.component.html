@@ -1,0 +1,22 @@
+<div class="formgrid grid" [formGroup]="formGroup">
+  <div class="field col">
+    <label for="settingName">Setting Name</label>
+    <input type="text" formControlName="name" />
+  </div>
+  <div class="field col">
+    <label for="settingType">Setting type:</label>
+    <select id="settingType" formControlName="dataType">
+      @for (dataType of dataTypes; track $index) {
+        <option [value]="dataType.value">{{ dataType.name }}</option>
+      }
+    </select>
+  </div>
+  <div class="field col">
+    <app-toggle label="Admin Only Setting" controlName="isAdmin" />
+  </div>
+  <div class="field col">
+    <button type="button" class="col" (click)="addSetting()">
+      <fa-icon [icon]="icons.add" />
+    </button>
+  </div>
+</div>

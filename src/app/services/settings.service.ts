@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { LpSetting } from '../../../api/interfaces/setting';
+import { LpSetting, LpSettingValue } from '../../../api/interfaces/setting';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse, GenericResult } from '../../../api/interfaces/api';
 
@@ -27,6 +27,13 @@ export class SettingsService {
         error: e as Error,
       };
     }
+  }
+
+  public async createSetting(
+    setting: LpSetting,
+    value: LpSettingValue,
+  ): Promise<string | true> {
+    return true;
   }
 
   private async fetchSettings(): Promise<void> {

@@ -11,21 +11,13 @@ import { LpUser } from '../interfaces/user';
 import { LpSetting } from '../interfaces/setting';
 
 settingsRouter.get(
-  '/settings/:name?',
+  '/settings',
   isAuthenticated,
   async (req: Request<{ name?: string }>, res: Response) => {
     try {
       const user = req.user as LpUser;
-      if (req.params.name) {
-        const setting = await Setting.findByName(user, req.params.name);
-        if (setting) {
-          return successResponse(res, setting);
-        }
 
-        return notFoundResponse(res, 'Setting');
-      }
-
-      const settings = await Setting.findAll(user);
+      const settings = await Setting.findAll(req.user as LpUser);
       successResponse(res, settings);
     } catch (e) {
       errorResponse(res, (e as Error).message);
@@ -64,7 +56,33 @@ settingsRouter.patch(
 settingsRouter.post(
   '/settings',
   isAuthenticated,
-  async (req: Request<{}, {}, { setting: LpSetting }>, res: Response) => {},
+  async (req: Request<{}, {}, { setting: LpSetting }>, res: Response) => {
+    try {
+      const { setting } = req.body;
+      const user = req.user as LpUser;
+
+      const restrictedSettings = ['allowRegistration'];
+      if (
+        user.role !== 'picklemaster' &&
+        restrictedSettings.includes(setting.name)
+      ) {
+        return errorResponse(res, 'Only an admin can alter that setting', 400);
+      }
+
+      const existing = await Setting.findByUserIdAndName(user.id, setting.name);
+
+      if (existing) {
+        return errorResponse(res, 'Setting already exists', 400);
+      }
+
+      setting.UserId = user?.id || 0;
+      const newSetting = await Setting.model.create(setting);
+
+      successResponse(res, newSetting);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  },
 );
 
 export default settingsRouter;

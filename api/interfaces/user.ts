@@ -5,6 +5,7 @@ import { Model, Optional } from 'sequelize';
 import { LpToken } from './token';
 import { LpHashBrown } from './hash';
 import { LpNotificationStatus } from './notificationStatus.interface';
+import { LpSetting } from './setting';
 
 export type LpUserRole = 'pickler' | 'picklemaster';
 
@@ -13,6 +14,7 @@ export interface LpUser extends LpBase {
   userName: string;
   Link: LpLink[];
   Comments: LpComment[];
+  Settings?: LpSetting[];
   Token?: LpToken;
   HashBrown?: LpHashBrown;
   role: LpUserRole;

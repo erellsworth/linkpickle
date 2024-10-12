@@ -9,14 +9,21 @@ import { LocalStoreService } from './local-store.service';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient, private localStore: LocalStoreService) {
+  constructor(
+    private http: HttpClient,
+    private localStore: LocalStoreService,
+  ) {
     const localUser = localStore.getValue<LpUser>('PickleUser');
     if (localUser) {
-      this.user.set(localUser);
+      this._user.set(localUser);
     }
   }
 
-  public user = signal<LpUser>({} as LpUser);
+  private _user = signal<LpUser>({} as LpUser);
+
+  public get user() {
+    return this._user;
+  }
 
   public get isLoggedIn(): boolean {
     return Boolean(this.token);
@@ -28,7 +35,7 @@ export class UserService {
   }
 
   public clearUser(): void {
-    this.user.set({} as LpUser);
+    this._user.set({} as LpUser);
     this.localStore.setValue('PickleUser', {});
   }
 
@@ -38,11 +45,11 @@ export class UserService {
   }): Promise<GenericResult> {
     try {
       const result = await firstValueFrom(
-        this.http.post<ApiResponse<LpUser>>('api/user/login', credentials)
+        this.http.post<ApiResponse<LpUser>>('api/user/login', credentials),
       );
 
       if (result.success) {
-        this.user.set(result.data as LpUser);
+        this._user.set(result.data as LpUser);
         this.localStore.setValue('PickleUser', result.data);
       }
 
@@ -55,6 +62,12 @@ export class UserService {
     }
   }
 
+  public async refresh(user: LpUser): Promise<void> {
+    this._user.update((_user) => {
+      return { ..._user, ...user };
+    });
+  }
+
   public async register(credentials: {
     email: string;
     userName: string;
@@ -63,7 +76,7 @@ export class UserService {
   }): Promise<GenericResult> {
     try {
       const result = await firstValueFrom(
-        this.http.post<ApiResponse>('api/user/register', credentials)
+        this.http.post<ApiResponse>('api/user/register', credentials),
       );
 
       return result;

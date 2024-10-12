@@ -63,7 +63,7 @@ const User = {
       },
       include: {
         model: UserModel,
-        include: [NotificationStatus.model],
+        include: [NotificationStatus.model, Token.model],
       },
     });
 
@@ -75,7 +75,7 @@ const User = {
   },
   authenticate: async (
     email: string,
-    password: string
+    password: string,
   ): Promise<LpUser | string> => {
     const user = await User.findByEmail(email);
 
@@ -86,7 +86,7 @@ const User = {
     const validCredentials = await HashBrown.verifiy(
       email,
       password,
-      user.HashBrown.hash
+      user.HashBrown.hash,
     );
 
     if (validCredentials) {
@@ -106,7 +106,7 @@ const User = {
   register: async (
     email: string,
     userName: string,
-    password: string
+    password: string,
   ): Promise<GenericResult> => {
     const existingUser = await User.findByEmail(email);
 

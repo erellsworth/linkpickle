@@ -3,6 +3,7 @@ import { db } from '../utils/db';
 import { LpTokenInstance } from '../interfaces/token';
 import { LpSetting, LpSettingInstance } from '../interfaces/setting';
 import { LpUser } from '../interfaces/user';
+import { SettingValueModel } from './SettingValue.model';
 
 const attributes: ModelAttributes<LpSettingInstance> = {
   name: {
@@ -12,10 +13,6 @@ const attributes: ModelAttributes<LpSettingInstance> = {
   label: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  value: {
-    type: DataTypes.STRING,
-    allowNull: true,
   },
   dataType: {
     type: DataTypes.STRING,
@@ -59,22 +56,18 @@ const SettingModel = db.define<LpSettingInstance>('Setting', attributes);
 const Setting = {
   model: SettingModel,
   findAll: async (user: LpUser): Promise<LpSetting[]> => {
-    let where: WhereOptions = {
-      UserId: user.id,
-    };
+    const include = SettingValueModel;
     if (user.role === 'picklemaster') {
-      where = {
-        [Op.or]: [
-          {
-            UserId: user.id,
-          },
-          {
-            isAdmin: true,
-          },
-        ],
-      };
+      return SettingModel.findAll({
+        include,
+      });
     }
-    return SettingModel.findAll({ where });
+    return SettingModel.findAll({
+      where: {
+        isAdmin: false,
+      },
+      include,
+    });
   },
   findByName: async (
     name: string,
@@ -87,6 +80,14 @@ const Setting = {
     });
 
     return setting?.value || defaultValue;
+  },
+  findByUserIdAndName: async (UserId: number, name: string) => {
+    return SettingModel.findOne({
+      where: {
+        UserId,
+        name,
+      },
+    });
   },
 };
 
