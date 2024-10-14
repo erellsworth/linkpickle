@@ -1,16 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faComment, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faBell as bellOutline } from '@fortawesome/free-regular-svg-icons';
 import { LpNotification } from '../../../../../api/interfaces/notification';
 import { NotificationService } from '../../../services/notification.service';
-import { ModalService } from '../../../services/modal.service';
-import { LinkService } from '../../../services/link.service';
-import { LpLink } from '../../../../../api/interfaces/link';
 import { ToasterService } from '../../../services/toaster.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notifications',
@@ -26,24 +22,48 @@ export class NotificationsComponent {
   constructor(
     private notificationService: NotificationService,
     private router: Router,
-    private toaster: ToasterService
+    private toaster: ToasterService,
   ) {}
 
-  public get icon(): IconDefinition {
-    return this.notifications.filter(
-      (notification) => notification.status === 'unread'
-    ).length
-      ? faBell
-      : bellOutline;
+  public get hasNotifications(): boolean {
+    return Boolean(
+      this.notifications.filter(
+        (notification) => notification.status === 'unread',
+      ).length,
+    );
+  }
+
+  public get navIcon(): IconDefinition {
+    return this.hasNotifications ? faBell : bellOutline;
   }
 
   public get notifications(): LpNotification[] {
     return this.notificationService.notifications();
   }
 
+  public async clearAll(): Promise<void> {
+    const result = await this.notificationService.clearNotifications();
+
+    if (typeof result === 'string') {
+      if (typeof result === 'string') {
+        this.toaster.add({
+          title: 'Problem clearing notifications',
+          message: result,
+          severity: 'warning',
+        });
+      }
+    } else {
+      this.showNotifications = false;
+    }
+  }
+
+  public notificationIcon(notification: LpNotification): IconDefinition {
+    return notification.CommentId ? faComment : faLink;
+  }
+
   public async readNotification(notification: LpNotification): Promise<void> {
     const result = await this.notificationService.readNotification(
-      notification.id
+      notification.id,
     );
 
     if (typeof result === 'string') {
@@ -56,6 +76,7 @@ export class NotificationsComponent {
 
     if (notification.LinkId) {
       this.router.navigate(['/link', notification.LinkId]);
+      this.showNotifications = false;
     }
   }
 }

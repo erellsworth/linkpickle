@@ -18,7 +18,34 @@ sitesRouter.get(
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
+);
+
+sitesRouter.patch(
+  '/notifications/clear',
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const user = req.user as LpUser;
+
+      let notifications = await Notification.findForUser(user);
+
+      const results = await Promise.all(
+        notifications.map(async (notification) =>
+          Notification.read(user.id, notification.id),
+        ),
+      );
+
+      if (results.includes(false)) {
+        return errorResponse(res, 'Failed to update some notifications');
+      }
+
+      successResponse(res, {});
+      Notification.clean(user.id);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  },
 );
 
 sitesRouter.patch(
@@ -34,29 +61,19 @@ sitesRouter.patch(
 
       const user = req.user as LpUser;
 
-      const [status, success] = await NotificationStatus.model.findOrBuild({
-        where: {
-          NotificationId: req.params.id,
-          UserId: user.id,
-        },
-        defaults: {
-          status: 'read',
-          UserId: user.id,
-          NotificationId: req.params.id,
-        },
-      });
+      const result = await Notification.read(user.id, req.params.id);
 
-      if (success) {
-        status.status = 'read';
-        status.save();
-        return successResponse(res, status);
+      if (result) {
+        successResponse(res, result);
+        await Notification.clean(user.id);
+        return;
       }
 
       errorResponse(res, 'Failed to update notification status');
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
-  }
+  },
 );
 
 export default sitesRouter;

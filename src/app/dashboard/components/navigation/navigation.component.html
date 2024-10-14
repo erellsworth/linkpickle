@@ -18,20 +18,22 @@
   <h4 class="m-0">Categories:</h4>
   <ul>
     @for (cat of categories; track $index) {
-    <li>
-      <a [routerLink]="['category', cat.id]" routerLinkActive="active">
-        <fa-icon [icon]="icons.jar" class="p-2" />
-        {{ cat.name }} ({{ cat.Links?.length || 0 }})
-      </a>
-    </li>
+      <li>
+        <a [routerLink]="['category', cat.id]" routerLinkActive="active">
+          <fa-icon [icon]="icons.jar" class="p-2" />
+          {{ cat.name }} ({{ cat.Links?.length || 0 }})
+        </a>
+      </li>
     }
   </ul>
   <ul>
-    <li>
-      <a [routerLink]="['settings']"
-        ><fa-icon [icon]="icons.settings" class="p-2" />Settings</a
-      >
-    </li>
+    @if (showSettings) {
+      <li>
+        <a [routerLink]="['settings']"
+          ><fa-icon [icon]="icons.settings" class="p-2" />Settings</a
+        >
+      </li>
+    }
     <li class="cursor-pointer" (click)="logout()">
       <a><fa-icon [icon]="icons.logOut" class="p-2" />Log Out</a>
     </li>

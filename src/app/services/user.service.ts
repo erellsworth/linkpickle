@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { LpUser } from '../../../api/interfaces/user';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -18,6 +18,10 @@ export class UserService {
       this._user.set(localUser);
     }
   }
+
+  public isAdmin = computed(() => {
+    return this._user().role === 'picklemaster';
+  });
 
   private _user = signal<LpUser>({} as LpUser);
 

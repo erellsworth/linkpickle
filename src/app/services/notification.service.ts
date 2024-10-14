@@ -18,14 +18,14 @@ export class NotificationService implements OnDestroy {
   constructor(
     private http: HttpClient,
     private socketService: SocketService,
-    private userService: UserService
+    private userService: UserService,
   ) {
     this.fetchNotifications();
     this._sub = this.socketService
       .channel('notifications')
       .pipe(
         filter((message) => Boolean(message.Notification)),
-        map((message) => message.Notification)
+        map((message) => message.Notification),
       )
       .subscribe((notification) => {
         this.notifications.update((notifications) => {
@@ -39,13 +39,30 @@ export class NotificationService implements OnDestroy {
     this._sub?.unsubscribe();
   }
 
+  public async clearNotifications(): Promise<true | string> {
+    try {
+      const result = await firstValueFrom(
+        this.http.patch<ApiResponse<LpNotification[]>>(
+          'api/notifications/clear',
+          {},
+        ),
+      );
+      if (result.success) {
+        return true;
+      }
+      return result.error?.message || 'Unknown Server Error';
+    } catch (e) {
+      return (e as Error).message;
+    }
+  }
+
   public async fetchNotifications(): Promise<void> {
     if (!this.userService.isLoggedIn) {
       return;
     }
     try {
       const result = await firstValueFrom(
-        this.http.get<ApiResponse<LpNotification[]>>('api/notifications')
+        this.http.get<ApiResponse<LpNotification[]>>('api/notifications'),
       );
       if (result.success) {
         this.notifications.set(result.data as LpNotification[]);
@@ -54,14 +71,14 @@ export class NotificationService implements OnDestroy {
   }
 
   public async readNotification(
-    notificationId: number
+    notificationId: number,
   ): Promise<true | string> {
     try {
       const result = await firstValueFrom(
         this.http.patch<ApiResponse<LpNotificationStatus>>(
           `api/notifications/read/${notificationId}`,
-          {}
-        )
+          {},
+        ),
       );
 
       if (result.success) {
@@ -71,7 +88,7 @@ export class NotificationService implements OnDestroy {
               notification.status = 'read';
             }
             return notification;
-          })
+          }),
         );
         return true;
       }

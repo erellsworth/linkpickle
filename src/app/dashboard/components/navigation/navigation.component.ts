@@ -12,7 +12,6 @@ import {
   faThumbTack,
 } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from '../../../services/user.service';
-import { LpUser } from '../../../../../api/interfaces/user';
 import { NotificationsComponent } from '../notifications/notifications.component';
 
 @Component({
@@ -42,11 +41,15 @@ export class NavigationComponent {
   constructor(
     private categoryService: CategoryService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   public get categories(): LpCategory[] {
     return this.categoryService.categories().filter((cat) => Boolean(cat.id));
+  }
+
+  public get showSettings(): boolean {
+    return this.userService.isAdmin();
   }
 
   public logout(): void {
