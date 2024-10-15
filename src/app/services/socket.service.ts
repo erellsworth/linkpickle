@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 })
 export class SocketService {
   private ws$ = webSocket<LpSocketMessage>(
-    `/socket?token=${this.userService.token}`
+    `/socket?token=${this.userService.token}`,
   );
   private socket$ = this.ws$.asObservable().pipe(retry({ delay: 5000 }));
 
@@ -17,9 +17,8 @@ export class SocketService {
 
   public channel(channel: LpSocketMessage['channel']) {
     return this.socket$.pipe(
-      tap((message) => console.log('messages', message)),
       filter((message) => message.fromUserId !== this.userService.user().id),
-      filter((message) => message.channel === channel)
+      filter((message) => message.channel === channel),
     );
   }
 }
