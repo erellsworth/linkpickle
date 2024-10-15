@@ -21,7 +21,14 @@ export class CategoryComponent {
 
   @Input()
   set id(id: string) {
+    if (id === 'pinned') {
+      this.query = {
+        pinned: true,
+      };
+      return;
+    }
     this._id = Number(id);
+
     if (this._id) {
       this.query = {
         categoryIds: [this._id],
