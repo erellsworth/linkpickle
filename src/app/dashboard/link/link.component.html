@@ -1,5 +1,6 @@
 @if (link) {
-<div class="w-11 m-auto">
-  <app-link-card [link]="link" />
-</div>
+  <app-dashboard-page [classes]="['relative']">
+    <fa-icon class="backButton" [icon]="backIcon" (click)="goBack()" />
+    <app-link-card [link]="link" />
+  </app-dashboard-page>
 }
