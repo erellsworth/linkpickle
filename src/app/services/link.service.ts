@@ -23,7 +23,7 @@ export class LinkService implements OnDestroy {
   public loading = signal<boolean>(false);
   public links = computed(() => {
     const results = this.queryCache().find(
-      (cache) => cache.query === JSON.stringify(this.currentQuery)
+      (cache) => cache.query === JSON.stringify(this.currentQuery),
     );
     if (results) {
       return results.result;
@@ -35,7 +35,10 @@ export class LinkService implements OnDestroy {
   private queryCache = signal<queryCache[]>([]);
   private _sub!: Subscription;
 
-  constructor(private http: HttpClient, private socketService: SocketService) {
+  constructor(
+    private http: HttpClient,
+    private socketService: SocketService,
+  ) {
     this._sub = this.socketService
       .channel('links')
       .subscribe((link) => this.updateCache());
@@ -43,6 +46,24 @@ export class LinkService implements OnDestroy {
 
   ngOnDestroy(): void {
     this._sub?.unsubscribe();
+  }
+
+  public async imageFailed(LinkId: number) {
+    try {
+      const result = await firstValueFrom(
+        this.http.patch<ApiResponse<LpLink>>(
+          `api/links/imageFailed/${LinkId}`,
+          {},
+        ),
+      );
+      if (result.success) {
+        return result.data as LpLink;
+      }
+
+      return result.error?.message || 'Unknown Error';
+    } catch (e) {
+      return (e as Error).message;
+    }
   }
 
   public queryLinks(query: LpLinkQuery): void {
@@ -53,7 +74,7 @@ export class LinkService implements OnDestroy {
   public async getLink(LinkId: number): Promise<LpLink | string> {
     try {
       const result = await firstValueFrom(
-        this.http.get<ApiResponse<LpLink>>(`api/link/${LinkId}`)
+        this.http.get<ApiResponse<LpLink>>(`api/link/${LinkId}`),
       );
       if (result.success) {
         return result.data as LpLink;
@@ -66,7 +87,7 @@ export class LinkService implements OnDestroy {
   }
 
   public async getLinkPreview(
-    url?: string
+    url?: string,
   ): Promise<{ preview: LpLinkPreview; siteName: string } | string> {
     const validUrl = this.getValidUrl(url);
 
@@ -85,7 +106,7 @@ export class LinkService implements OnDestroy {
           params: {
             url: validUrl,
           },
-        })
+        }),
       );
 
       return urlData.success
@@ -98,14 +119,14 @@ export class LinkService implements OnDestroy {
 
   public async createLink(
     link: LpLink,
-    categories: LpCategory[] = []
+    categories: LpCategory[] = [],
   ): Promise<LpLink | string> {
     try {
       const result = await firstValueFrom(
         this.http.post<ApiResponse<LpLink>>('api/links', {
           link,
           categories,
-        })
+        }),
       );
 
       if (result.success) {
@@ -122,7 +143,7 @@ export class LinkService implements OnDestroy {
   public async deleteLink(linkId: number): Promise<ApiResponse<boolean>> {
     try {
       const result = await firstValueFrom(
-        this.http.delete<ApiResponse<boolean>>(`api/link/${linkId}`)
+        this.http.delete<ApiResponse<boolean>>(`api/link/${linkId}`),
       );
 
       if (result.success) {
@@ -155,14 +176,14 @@ export class LinkService implements OnDestroy {
 
   public async updateLink(
     link: LpLink,
-    categories: LpCategory[] = []
+    categories: LpCategory[] = [],
   ): Promise<LpLink | string> {
     try {
       const result = await firstValueFrom(
         this.http.put<ApiResponse<LpLink>>('api/links', {
           link,
           categories,
-        })
+        }),
       );
 
       if (result.success) {
@@ -218,7 +239,7 @@ export class LinkService implements OnDestroy {
       const result = await firstValueFrom(
         this.http.get<PaginatedApiResponse<LpLink>>(`api/links/search`, {
           params,
-        })
+        }),
       );
 
       if (result.success) {

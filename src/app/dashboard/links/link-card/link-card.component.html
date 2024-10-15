@@ -1,5 +1,5 @@
-@if(link.id) {
-<hr />
+@if (link.id) {
+  <hr />
 }
 
 <div
@@ -8,19 +8,23 @@
 >
   <div class="w-full">
     <div class="flex">
-      @if(link.thumbnail) {
-      <div class="thumbnail pr-2">
-        <a [href]="link.url" target="_blank">
-          <img class="p-0" [src]="link.thumbnail" />
-        </a>
-      </div>
+      @if (link.thumbnail) {
+        <div class="thumbnail pr-2">
+          <a [href]="link.url" target="_blank">
+            <img
+              class="p-0"
+              [src]="link.thumbnail"
+              (error)="imageError($event)"
+            />
+          </a>
+        </div>
       }
       <div class="p-0">
         <h4 class="mt-0">
           <a [href]="link.url" target="_blank">{{ link.title }}</a>
         </h4>
-        @if(link.description){
-        <p class="pt-0">{{ link.description }}</p>
+        @if (link.description) {
+          <p class="pt-0">{{ link.description }}</p>
         }
       </div>
     </div>
@@ -31,16 +35,16 @@
 
       <hr />
       <div class="flex">
-        @if(link.Categories?.length) {
-        <h2 class="py-1 px-2"><fa-icon [icon]="icons.jar" /></h2>
+        @if (link.Categories?.length) {
+          <h2 class="py-1 px-2"><fa-icon [icon]="icons.jar" /></h2>
 
-        <ul>
-          @for (cat of link.Categories; track $index) {
-          <li>
-            <a [routerLink]="['category', cat.id]">{{ cat.name }}</a>
-          </li>
-          }
-        </ul>
+          <ul>
+            @for (cat of link.Categories; track $index) {
+              <li>
+                <a [routerLink]="['category', cat.id]">{{ cat.name }}</a>
+              </li>
+            }
+          </ul>
         }
         <p class="flex-grow-1 text-right align-self-center">
           Added by: {{ userName }}
@@ -50,18 +54,23 @@
   </div>
   <div>
     @if (link.pinned) {
-    <app-tooltip message="pinned link" [showOnHover]="true" position="top-left">
-      <div class="p-2">
-        <fa-icon [icon]="icons.pinned" />
+      <app-tooltip
+        message="pinned link"
+        [showOnHover]="true"
+        position="top-left"
+      >
+        <div class="p-2">
+          <fa-icon [icon]="icons.pinned" />
+        </div>
+      </app-tooltip>
+    }
+    @if (isEditable) {
+      <div class="p-2 cursor-pointer" (click)="showEditor()">
+        <fa-icon [icon]="icons.edit" />
       </div>
-    </app-tooltip>
-    } @if(isEditable){
-    <div class="p-2 cursor-pointer" (click)="showEditor()">
-      <fa-icon [icon]="icons.edit" />
-    </div>
-    <div class="p-2 cursor-pointer" (click)="confirmDelete()">
-      <fa-icon [icon]="icons.delete" />
-    </div>
+      <div class="p-2 cursor-pointer" (click)="confirmDelete()">
+        <fa-icon [icon]="icons.delete" />
+      </div>
     }
   </div>
 </div>

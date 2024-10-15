@@ -10,7 +10,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipComponent } from '../../../pickle-ui/tooltip/tooltip.component';
 import { ModalService } from '../../../services/modal.service';
-import { LinkSearchComponent } from '../../components/link-search/link-search.component';
 import { LinkPicklerComponent } from '../../components/link-pickler/link-pickler.component';
 import { LinkService } from '../../../services/link.service';
 import { ToasterService } from '../../../services/toaster.service';
@@ -43,7 +42,7 @@ export class LinkCardComponent {
     private linkService: LinkService,
     private modalService: ModalService,
     private toasterService: ToasterService,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   public get isEditable(): boolean {
@@ -55,6 +54,12 @@ export class LinkCardComponent {
       return 'You';
     }
     return this.isEditable ? 'You' : this.link?.User?.userName || 'Unknown';
+  }
+
+  public imageError(e: ErrorEvent) {
+    if (this.link.id) {
+      this.linkService.imageFailed(this.link.id);
+    }
   }
 
   public showEditor(): void {

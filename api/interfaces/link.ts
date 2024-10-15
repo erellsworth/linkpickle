@@ -8,7 +8,7 @@ export interface LpLinkPreview {
   url: string;
   title: string;
   description?: string;
-  thumbnail?: string;
+  thumbnail?: string | null;
 }
 
 export interface LpLink extends LpBase, LpLinkPreview {

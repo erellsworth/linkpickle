@@ -9,7 +9,6 @@ import { LpLink, LpLinkPreview } from '../interfaces/link';
 import { LpCategory } from '../interfaces/category';
 import { LpLinkQuery } from '../interfaces/query';
 import { Notification } from '../models/Notification.model';
-import { LpNotification } from '../interfaces/notification';
 
 linksRouter.get(
   '/link/:id',
@@ -308,6 +307,29 @@ linksRouter.put(
       linkRecord.addCategories(categoryIds);
 
       successResponse(res, linkRecord);
+    } catch (e) {
+      errorResponse(res, (e as Error).message);
+    }
+  },
+);
+
+linksRouter.patch(
+  '/links/imageFailed/:id',
+  isAuthenticated,
+  async (req: Request<{ id: number }>, res: Response) => {
+    try {
+      const id = req.params.id;
+      const user = req.user as LpUser;
+
+      const link = await Link.findById(user.id, id);
+
+      if (link) {
+        link.thumbnail = null;
+        const updated = await link.save();
+        return successResponse(res, updated);
+      }
+
+      errorResponse(res, 'Link not found', 404);
     } catch (e) {
       errorResponse(res, (e as Error).message);
     }
