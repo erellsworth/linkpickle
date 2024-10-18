@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faBell, faComment, faLink } from '@fortawesome/free-solid-svg-icons';
@@ -17,6 +17,11 @@ import { Router } from '@angular/router';
   providers: [NotificationService],
 })
 export class NotificationsComponent {
+  @HostBinding('class.notificationsShowing')
+  get notificationsShowing(): boolean {
+    return this.showNotifications;
+  }
+
   public showNotifications = false;
 
   constructor(

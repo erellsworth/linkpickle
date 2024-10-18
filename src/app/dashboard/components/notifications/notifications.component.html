@@ -3,8 +3,9 @@
     [icon]="navIcon"
     class="p-2 block"
     [class.has-notifications]="notifications.length"
-  />Notifications</a
->
+  />
+  <span class="hidden md:inline">Notifications</span>
+</a>
 @if (showNotifications) {
   <div class="absolute left-0 right-0 bg-primary-reverse text-left">
     @if (hasNotifications) {

@@ -1,6 +1,23 @@
+@import "../../../node_modules/primeflex/core/variables";
+
 .sidebar {
   position: sticky;
   top: 1rem;
   height: calc(100vh - 1.5rem);
   overflow: scroll;
+  z-index: 999;
+
+  fa-icon {
+    display: none;
+  }
+
+  @media screen and (max-width: $sm) {
+    height: auto;
+    top: auto;
+    bottom: 0;
+
+    &:has(.notificationsShowing) {
+      height: 100vh;
+    }
+  }
 }

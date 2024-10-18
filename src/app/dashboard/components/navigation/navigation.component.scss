@@ -1,7 +1,14 @@
+@import "../../../../../node_modules/primeflex/core/variables";
+
 :host {
   ::ng-deep {
     ul {
       li {
+        @media screen and (max-width: $sm) {
+          span {
+            display: none;
+          }
+        }
         a {
           color: var(--secondary-color);
           padding: 0.5rem;
