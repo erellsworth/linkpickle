@@ -9,7 +9,7 @@
   <div class="w-full">
     <div class="flex">
       @if (link.thumbnail) {
-        <div class="thumbnail pr-2">
+        <div class="thumbnail pr-2 hidden md:block">
           <a [href]="link.url" target="_blank">
             <img
               class="p-0"
@@ -20,11 +20,11 @@
         </div>
       }
       <div class="p-0">
-        <h4 class="mt-0">
+        <h4 class="my-0">
           <a [href]="link.url" target="_blank">{{ link.title }}</a>
         </h4>
         @if (link.description) {
-          <p class="pt-0">{{ link.description }}</p>
+          <p class="pt-0 hidden md:block">{{ link.description }}</p>
         }
       </div>
     </div>
@@ -46,13 +46,13 @@
             }
           </ul>
         }
-        <p class="flex-grow-1 text-right align-self-center">
+        <p class="hidden md:block flex-grow-1 text-right align-self-center">
           Added by: {{ userName }}
         </p>
       </div>
     </div>
   </div>
-  <div>
+  <div class="hidden md:block">
     @if (link.pinned) {
       <app-tooltip
         message="pinned link"

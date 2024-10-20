@@ -1,15 +1,15 @@
 <app-dashboard-page>
   <div class="grid align-items-center">
-    <div class="col-6">
+    <div class="md:col-6 col-12">
       <app-results-info />
     </div>
-    <div class="col-6">
+    <div class="md:col-6 col-12">
       <app-link-search />
     </div>
   </div>
 
   @for (link of links; track $index) {
-  <app-link-card [link]="link" />
+    <app-link-card [link]="link" />
   }
 
   <app-pagination [totalResults]="total" (pageChanged)="changePage($event)" />

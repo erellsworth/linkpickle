@@ -1,11 +1,14 @@
 <div class="bg-primary p-2 border-round flex justify-content-between">
-  @if(loading){
-  <app-loading-indicator size="sm" />
-  } @if(!loading && !links.length) {
-  <span>No Links Found</span>
-  } @if(links.length) {
-  <span>Showing {{ links.length }} of {{ total }} Links</span>
-  } @if (category) {
-  <span>{{ (category | async)?.name }} </span>
+  @if (loading) {
+    <app-loading-indicator size="sm" />
+  }
+  @if (!loading && !links.length) {
+    <span>No Links Found</span>
+  }
+  @if (links.length) {
+    <span>Showing {{ links.length }} of {{ total }} Links</span>
+  }
+  @if (category) {
+    <span>{{ (category | async)?.name }} </span>
   }
 </div>
