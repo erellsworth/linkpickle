@@ -18,6 +18,7 @@ import { CategoryService } from '../../../services/category.service';
 import { LpLinkQuery } from '../../../../../api/interfaces/query';
 import { JsonPipe } from '@angular/common';
 import { ModalService } from '../../../services/modal.service';
+import { ToggleComponent } from '../../../pickle-ui/forms/toggle/toggle.component';
 
 interface LinkForm {
   url: FormControl<string>;
@@ -36,6 +37,7 @@ interface LinkForm {
     LoadingIndicatorComponent,
     ReactiveFormsModule,
     SqueezeboxComponent,
+    ToggleComponent,
   ],
   templateUrl: './link-pickler.component.html',
   styleUrl: './link-pickler.component.scss',
@@ -62,7 +64,7 @@ export class LinkPicklerComponent implements OnInit {
     private fb: FormBuilder,
     private linkService: LinkService,
     private modalService: ModalService,
-    private toaster: ToasterService
+    private toaster: ToasterService,
   ) {
     effect(() => {
       if (this.link) {
@@ -157,19 +159,19 @@ export class LinkPicklerComponent implements OnInit {
     this.formGroup = this.fb.group({
       url: this.fb.nonNullable.control(
         this.link ? this.link.url : '',
-        Validators.required
+        Validators.required,
       ),
       title: this.fb.nonNullable.control(
         this.link ? this.link.title : '',
-        Validators.required
+        Validators.required,
       ),
       description: this.fb.nonNullable.control(
-        this.link ? this.link.description : ''
+        this.link ? this.link.description : '',
       ),
       categories: this.fb.nonNullable.control(
         this.link && this.link.Categories
           ? this.link.Categories
-          : ([] as LpCategory[])
+          : ([] as LpCategory[]),
       ),
       pinned: this.fb.nonNullable.control(this.link ? this.link.pinned : false),
     });
