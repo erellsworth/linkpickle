@@ -107,6 +107,7 @@ const User = {
     email: string,
     userName: string,
     password: string,
+    role?: LpUser['role'],
   ): Promise<GenericResult> => {
     const existingUser = await User.findByEmail(email);
 
@@ -117,10 +118,13 @@ const User = {
       };
     }
 
+    //TODO: check password strength
+
     try {
       const newUser = await User.model.create({
         email,
         userName,
+        role,
       } as LpUser);
 
       return HashBrown.generate(newUser.id, email, password);

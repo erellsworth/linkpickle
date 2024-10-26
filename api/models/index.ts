@@ -49,38 +49,4 @@ User.model.hasMany(Link.model);
 User.model.hasOne(Token.model);
 User.model.hasMany(NotificationStatus.model);
 
-const prepare = async () => {
-  const tables: any = await db.getQueryInterface().showAllSchemas();
-
-  if (!tables.length) {
-    await Category.model.sync();
-    await Comment.model.sync();
-    await HashBrown.model.sync();
-    await Link.model.sync();
-    await Setting.model.sync();
-    await Site.model.sync();
-    await Token.model.sync();
-    await User.model.sync();
-    await LinkCategoryModel.sync();
-    await Notification.model.sync();
-    await NotificationStatus.model.sync();
-    await UserSettingModel.sync();
-    await SettingValueModel.sync();
-
-    const allowRegistration = await Setting.findByName('allowRegistration');
-
-    if (!allowRegistration) {
-      Setting.model.create({
-        name: 'allowRegistration',
-        value: 'true',
-        label: 'Allow Registration',
-        isAdmin: true,
-        dataType: 'boolean',
-      });
-    }
-  }
-};
-
-prepare();
-
 export { Category, Comment, Link, Site, User, Setting, Token };
